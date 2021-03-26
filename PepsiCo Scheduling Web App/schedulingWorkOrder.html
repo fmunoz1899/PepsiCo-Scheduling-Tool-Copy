@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title>New workorder</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
+</head>
+<body>
+    <div class="jumbotron text-center jumbotronImg">
+        <h1 class="font-weight-bold text-center">New Workorder</h1>
+        <img class = "img1"  src = "pepsi.png"> 
+        <hr class = "hr1">
+    </div>
+	<form>
+		<p>Employee: 
+			<select name="employee">
+				<option value="" desabled selected>Select One</option>
+				<option>Main Employee</option>
+				<option>Second Employee</option>
+				<option>Third Employee</option>
+			</select>
+		</p>
+		<p>Date: 
+			<select name="date">
+				<option value="" desabled selected>Select Date</option>
+				<option>Day 1</option>
+				<option>Day 2</option>
+				<option>Day 3</option>
+			</select>
+		</p>
+		<p>Start Time: 
+			<select name="startTime">
+				<option value="" desabled selected>Select One</option>
+				<option>9:00</option>
+				<option>9:15</option>
+				<option>9:30</option>
+			</select>
+		</p>
+		<p>Job Length: 
+			<select name="jobLenght">
+				<option value="" desabled selected>Select One</option>
+				<option>15 minutes</option>
+				<option>30 minutes</option>
+				<option>45 minutes</option>
+			</select>
+		</p>
+		<button type="submit" name="submit" class="btn btn-primary">Done</button> 
+	</form>
+
+</body>
+</html>

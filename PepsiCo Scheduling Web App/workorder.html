@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title>New workorder</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
+</head>
+<body>
+    <div class="jumbotron text-center jumbotronImg">
+        <h1 class="font-weight-bold text-center">New Workorder</h1>
+        <img class = "img1"  src = "pepsi.png"> 
+        <hr class = "hr1">
+    </div>
+	
+	<form action="schedulingWorkOrder.html" method="POST">
+		<p>Location: 
+			<select name="SelectLocation">
+				<option value="" desabled selected>Select One</option>
+				<option>Location 1</option>
+				<option>Location 2</option>
+				<option>Location 3</option>
+			</select>
+		</p>
+		<p>Delivery method: 
+			<select name="SelectDelivery">
+				<option value="" desabled selected>Select One</option>
+				<option>Delivery 1</option>
+				<option>Delivery 2</option>
+				<option>Delivery 3</option>
+			</select>
+		</p>
+		<p>Description:
+			<input type="text" name="Description">
+		</p>
+		<p>Main Employee: 
+			<select name="EmpMain">
+				<option value="" desabled selected>Select One</option>
+				<option>Employee 1</option>
+				<option>Employee 2</option>
+				<option>Employee 3</option>
+			</select>
+		</p>
+		<p>Second Employee: 
+			<select name="EmpSec">
+				<option value="" desabled selected>Select One</option>
+				<option>Employee 1</option>
+				<option>Employee 2</option>
+				<option>Employee 3</option>
+			</select>
+		</p>
+		<p>Third Employee: 
+			<select name="EmpThird">
+				<option value="" desabled selected>Select One</option>
+				<option>Employee 1</option>
+				<option>Employee 2</option>
+				<option>Employee 3</option>
+			</select>
+		</p>
+		<button type="submit" name="submit" class="btn btn-primary">Next</button> 
+	</form>
+	
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html> 
+<head>
+    <title>Pepsi Scheduling Tool</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
+        <!-- <script language='Javascript' type='text/javascript' src='JavaScript/doStuff.js'></script> -->
+        <script>
+                $(document).ready(function(){
+                  $('[data-toggle="tooltip"]').tooltip();   
+                });               
+        </script>
+    </head>
+
+    <body>
+
+            <div class="jumbotron text-center jumbotronImg">
+                <h1 class="font-weight-bold text-center">PepsiCo. Scheduling Tool</h1>
+                <img class = "img1"  src = "pepsi.png"> 
+                <hr class = "hr1">
+            </div>
+
+            <div>
+                <h1 class="h1_1">Account Log In</h1>
+            </div>
+            
+            <form action = "SignIn.php" method = "POST">
+                <div class="form-group">
+                    <label>Account ID</label>
+                    <input type="Text" class="form-control" name="usr" placeholder="Email" required>
+                </div>
+                         
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="pin_num" placeholder="Password" required>
+                </div>     
+                   
+                    <button type="submit" name="submit" class="btn btn-primary">Log In</button>           
+            </form>
+            <div id="err" class = "div1 text-danger"></div>
+                <a href = "List_View.html"><button class="button2">TEMP TO GET TO PAGE</button></a> 
+                <a href = "AdminLanding.html"><button class="button2">TEMP TO GET TO ADMIN</button></a> 
+       
+    </body>
+</html>
+
