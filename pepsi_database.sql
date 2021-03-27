@@ -183,7 +183,7 @@ DROP TABLE IF EXISTS `location`;
 CREATE TABLE IF NOT EXISTS `location` (
   `LocationID` bigint(20) NOT NULL AUTO_INCREMENT,
   `LocationName` varchar(45) NOT NULL,
-  `StreetAdress` varchar(45) NOT NULL,
+  `StreetAddress` varchar(45) NOT NULL,
   `City` varchar(45) NOT NULL,
   `State` varchar(20) NOT NULL,
   `Zip` int(5) NOT NULL,
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `location` (
 -- Dumping data for table `location`
 --
 
-INSERT INTO `location` (`LocationID`, `LocationName`, `StreetAdress`, `City`, `State`, `Zip`) VALUES
+INSERT INTO `location` (`LocationID`, `LocationName`, `StreetAddress`, `City`, `State`, `Zip`) VALUES
 (1, 'warehouse', '715 North Ave', 'Houston', 'TX', 11111),
 (2, 'my house', '515 tenicey ave', 'city in TN', 'TN', 69696),
 (3, 'ivanov backyard', '169 ivanov road', 'jersey place', 'NJ', 12345),
