@@ -17,8 +17,8 @@
 	
 	if (isset($_POST['Email']) && isset($_POST['Epassword']))
 	{
-		$emailcheck= $_POST['Email'];
-		$passwordcheck= $_POST['Epassword'];
+		$emailcheck= filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
+		$passwordcheck= filter_var($_POST['Epassword'], FILTER_SANITIZE_STRING);
 		
 		$result = $link->prepare("SELECT employeeprivlege.PrivilegeID, employeeprivlege.EmployeeID FROM employeeprivlege, email, employee WHERE Email.Email=? and email.EmployeeID= employeeprivlege.EmployeeID and email.EmployeeID=employee.EmployeeID and employee.Epassword=?") ;
 		$result->bind_param("ss",$emailcheck,$passwordcheck);
@@ -38,6 +38,7 @@
                 if($row['PrivilegeID']=='A')
 				{
 					echo "<script>alert('This would lead to the ADMIN page!')</script>";
+					 header("location:AdminLanding.php"); 
 					//header("location:admin.php"); 
 				}						
 				
@@ -109,7 +110,7 @@
             </form>
             <div id="err" class = "div1 text-danger"></div>
                 <a href = "List_View.html"><button class="button2">TEMP TO GET TO PAGE</button></a> 
-                <a href = "AdminLanding.html"><button class="button2">TEMP TO GET TO ADMIN</button></a> 
+                <!--<a href = "AdminLanding.html"><button class="button2">TEMP TO GET TO ADMIN</button></a> use log in to get to admin -->
        
     </body>
 </html>
