@@ -1,3 +1,4 @@
+//this is to connect to the database
 <?php
 	$link=mysqli_connect("localhost","root","","pepsi_databse");
 	if($link==false)
