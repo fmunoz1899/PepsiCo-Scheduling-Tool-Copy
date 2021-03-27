@@ -21,7 +21,7 @@
     <body>
         <nav class="navbar navbar-expand-sm fixed-top nav">
            <ul class="navbar-nav">	
-                <li class="nav-item active"><a class="nav-link a2" href="AdminLanding.html">Employees</a></li>
+                <li class="nav-item active"><a class="nav-link a2" href="AdminLanding.php">Employees</a></li>
             </ul>
       </nav>
 
@@ -36,23 +36,27 @@
                 <h1 class="h1_1">Displaying all Employees</h1>
             </div>
  <?php 
+ //I believe in order to do the filter, it's going to need to be JS and done dynamically 
 	include('connect.php');
-	session_start();  //not sure off top of head if session variable for admin is needed
-	$names="SELECT firstName, lastName FROM employee";
+	$names="SELECT firstName, lastName, EmployeeID FROM employee"; //no user input therefore no need to prepare and bind
 	$result=$link->query($names);
 echo" 
-            <!-- All names will be taken from the database -->
+			
             <div class='row div_space'> 
                 <div class='col-md-1'> </div>
                 <div class='col-md-4'> 
                     <label>Select employee to filter results:</label>
+					
                     <select name='employees' id='emps'>
-						<option>None</option>";
+						<option value=-1>None</option>"; //no empID can be -1
                         while($row=$result->fetch_assoc()) 
-							echo"<option value=" . $row["firstName"] . " " . $row["lastName"] . ">" . $row["firstName"] . " " . $row["lastName"] . "</option>";
+							echo"<option value=" . $row['EmployeeID'] . ">" . $row['firstName'] . " " . $row['lastName'] . "</option>"; //have the empID as the value for the filter
 echo"
                     </select>
                 </div>
+				
+				
+				
 	";
 	mysqli_close($link);
  ?>              
@@ -80,42 +84,40 @@ echo"
 				$cleanpnum=filter_var($_POST['pnum'], FILTER_SANITIZE_NUMBER_INT);
 				$cleanpword=filter_var($_POST['pword'], FILTER_SANITIZE_STRING);
 				
-				$emptable=$link->prepare("insert into employee values(default,?,?,?)");
-				$emptable->bind_param("sss",$cleanfname,$cleanlname,$cleanpword);
-				$enter=$emptable->execute();
+				if($_POST['fname']!=$cleanfname || $cleanlname!=$_POST['lname'] || $cleanem!=$_POST['em'] || $_POST['pnum']!=$cleanpnum || $cleanpword!= $_POST['pword'])
+					echo "<script>alert('There are invalid characters in the input values, please try again');</script>"; //warning to say not same as after sanitization
 				
-				$empid="SELECT Max(EmployeeID) FROM employee";
-				$result=mysqli_query($link,$empid);
-				$row = mysqli_fetch_array($result);
 				
-				//I tired and annyoed with this garbage so I'm leaving it at this for now, kinda still broken :( 
-				$holder=$row['Max(EmployeeID)'];
+				else
+				{
+					$emptable=$link->prepare("insert into employee values(default,?,?,?)");
+					$emptable->bind_param("sss",$cleanfname,$cleanlname,$cleanpword);
+					$emptable->execute(); 
+					
+					$empid="SELECT Max(EmployeeID) FROM employee"; //does not need to be bind or prepared as no user input !!might need to be changed!!
+					$result=mysqli_query($link,$empid);
+					$row = mysqli_fetch_array($result);
+					
+					$emailprep=$link->prepare("INSERT into email values(?," . $row['Max(EmployeeID)'] . ",'Work')");
+					$emailprep->bind_param("s",$cleanem);
+					$emailprep->execute();
+					
+					
+					$numprep=$link->prepare("INSERT into phone values(?," . $row['Max(EmployeeID)'] . ",'Work')");
+					$numprep->bind_param("s",$cleanpnum);
+					$numprep->execute();
+					
+					$emppriv="INSERT into employeeprivlege values(" . $row['Max(EmployeeID)'] . ", '" . $_POST['role'] . "')";
+					mysqli_query($link,$emppriv);
 				
-				$email="INSERT into email values($holder,$cleanem)";
-				mysqli_query($link,$email);
-				
-				$phone="INSERT into phone values($holder,$cleanpnum)";
-				mysqli_query($link, $phone);
-				/*$emailenter=$link->prepare("INSERT into email values(?,?)"); MUST FIGURE OUT HOW TO MAKE SANATIZE
-				$emailenter->bind_param("is",$holder,$cleanem);
-				$pnumenter=$link->prepare("INSERT into phone values(" . $row['Max(EmployeeID)'] . ",?");
-				$pnumenter->bind_param("s",$cleanpnum);
-				$emailenter->execute();
-				$pnumenter->execute();
-				
-				$emptable->close();
-				$emailenter->close();
-				$pnumenter->close();*/
-				
-				//prepare and bind query
-				//enter into database
-				//get role to the new user within emp_priv table
-				//
+					header("Refresh:0"); //to force refresh to show new employee in filter
+				}
 			}
 			
 			else
 				echo"<script>alert('Your passwords do not match!')</script>";
 		}
+		$link->close();
 		
 ?>
       <div class="modal fade" id="newEmp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -147,12 +149,12 @@ echo"
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input class="form-control" name="pword" placeholder="Password" type="password" required>
+                    <input class="form-control" name="pword" placeholder="Password" type="password" required> <!-- we need to end up hashing this-->
 					<!-- title='Must be 8-20 characters long and contain a number' type="password" pattern="(?=.*\d).{8,20}" <-- that line forces at least 1 num and max/min len -->
                 </div>   
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input class="form-control" name="pwordc" placeholder="Password" type="password" required>
+                    <input class="form-control" name="pwordc" placeholder="Password" type="password" required> <!-- we need to end up hashing this-->
 					<!-- title='Must be 8-20 characters long and contain a number' type="password" pattern="(?=.*\d).{8,20}" <-- that line forces at least 1 num and max/min len -->
                 </div>
                 <!-- JAVASCRIPT TO CHECK IF PASSWORDS MATCH FILTER AND SANATIZE EVERYTHING HERE!!!! -->
@@ -176,45 +178,65 @@ echo"
       </div>
 
       <!------------------------------------->
-	  <!-- depending upon how to do filter, this will change therefore it shall wait for the time being -->
-        <div class="row tbl_space"> 
-            <div class="col-md-1"> </div>
-            <div class = "col-md-10">
-			<table style= width:75%>
+<?php
+include('connect.php');
+
+echo"
+        <div class='row tbl_space'> 
+            <div class='col-md-1'> </div>
+            <div class = 'col-md-10'>
+			<table>
                     <tr>
+					  <th>Edit</th>
                       <th>First Name</th>
                       <th>Last Name</th>
                       <th>Primary Email	</th>
                       <th>Primary Phone Number</th>
                       <th>Schedule Information</th>
+					  <th>Role</th>
                     </tr>
                     <tr>
-                      <td><a href = "EmployeeInfo.html">John </a></td>
+					  <td></td>
+                      <td><a href = 'EmployeeInfo.php'>John </a></td>
                       <td>Doe</td>
                       <td>jd2301@pepsico.org</td>
                       <td>9147852654</td>
                       <td></td>
+					  <td>E</td>
                     </tr>
-                    <tr>
-                        <td>Robert</td>
-                        <td>Johnson</td>
-                        <td>rjohnson1234@pepsico.org</td>
-                        <td>9845652123</td>
-                        <td></td>
+                    <tr>"; //this will be left here for now as way to remember to do the edit and remove, whether it be button or hyperlink
+					
+					$peopleinfo="SELECT firstName, lastName, email, phoneNumber, PrivilegeID 
+					FROM employee, employeeprivlege, email, phone 
+					where employee.EmployeeID=email.EmployeeID 
+					and email.Type='Work' 
+					and employee.EmployeeID=phone.EmployeeID 
+					and phone.Type='Work' 
+					and employee.EmployeeID=employeeprivlege.EmployeeID";
+					
+					$result=mysqli_query($link,$peopleinfo);
+					
+					while($row=$result->fetch_assoc())
+					{
+echo"					
+						<td><button value='asdas'><a href='EmployeeInfo.php' style= color:black>Edit</button></a></td>
+                        <td>" . $row['firstName'] . "</td>
+                        <td>" . $row['lastName'] . "</td>
+                        <td>" . $row['email'] . "</td>
+                        <td>" . $row['phoneNumber'] . "</td>
+                        <td>Schedule Info Here</td>
+						<td>" . $row['PrivilegeID'] . "</td>
                       </tr>
-                      <tr>
-                        <td>Fwankie</td>
-                        <td>Munoz</td>
-                        <td>fmunny@pepsico.org</td>
-                        <td>6352100045</td>
-                        <td></td>
-                      </tr>                           
+					  ";
+					}
+	$link->close();
+					?>
+				  
                   </table>
             </div>
             <div class="col-md-1"> </div>
-        </div>
-        
-            
+        </div>  
     </body>
 </html>
+
 
