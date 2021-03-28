@@ -36,10 +36,9 @@
             </div>
 <?php
     include('connect.php');    
-	$LocationName="SELECT LocationName FROM location";
+	$LocationName="SELECT LocationName, LocationID FROM location";
 	$result=$link->query($LocationName);
 echo" 
-            <!-- All names will be taken from the database -->
             <div class='row div_space'> 
                 <div class='col-md-1'> </div>
                 <div class='col-md-4'> 
@@ -47,15 +46,16 @@ echo"
                     <select name='locations' id='lid'>
 						<option>Select one</option>";
                         while($row=$result->fetch_assoc()) 
-							echo '<option value="'.$row["LocationName"].'">'.$row["LocationName"].'</option>';
+							echo '<option value="'.$row["LocationID"].'">'.$row["LocationName"].'</option>';
 echo"
                     </select>
                 </div>
 	";
 echo'
 	<div class="col-md-9"> </div>
-              <div class="col-md-3">
-                <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newLoc"> Create New Location</button>
+      <div class="col-md-3">
+          <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newLoc"> Create New Location</button>
+      </div>
 
 	';
 	mysqli_close($link);
@@ -95,35 +95,44 @@ echo'
           </div>
         </div>
       </div>
-
+    </div>      
+    
       <!------------------------------------->
 <?php
 	include('connect.php');
 	$sqlL="SELECT LocationName, StreetAdress, State, Zip FROM location";
 	$result=$link->query($sqlL);
-//Don't know why this is on the right side of the page
 
-	echo'<div class="table">';
-	echo "<h2> Locations </h2>";
-			echo " <table border='1'> ";
-			echo "<tr>
-					<th> Location Name </th>
-					<th> Address </th>
-					<th> State </th>
-					<th> Zip </th>
-				  </tr>";
-			while($row = $result->fetch_assoc()) {
-				echo "<tr>
-					<td>".$row["LocationName"]. "</td>
-					<td>". $row["StreetAdress"]. "</td>
-					<td>" . $row["State"]."</td>
-					<td>" . $row["Zip"]."</td>
-				</tr>";
-			}
-	echo'</div>';
+
+
+	echo'<div class="row tbl_space">';
+
+    echo "<div class='col-md-1'> </div>";
+        echo "<div class = 'col-md-10'>";
+          echo " <table> ";
+          echo "<tr>
+              <th> Location Name </th>
+              <th> Address </th>
+              <th> State </th>
+              <th> Zip </th>
+              </tr>";
+          while($row = $result->fetch_assoc()) 
+          {
+            echo "<tr>
+              <td>".$row["LocationName"]. "</td>
+              <td>". $row["StreetAdress"]. "</td>
+              <td>" . $row["State"]."</td>
+              <td>" . $row["Zip"]."</td>
+            </tr>";
+          }
+        echo"</table>
+      </div>
+      <div class='col-md-1'> </div>
+  </div>
+  </div>";
 	mysqli_close($link);
-	
 ?>
+
         
         
             
