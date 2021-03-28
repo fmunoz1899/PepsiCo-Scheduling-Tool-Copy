@@ -99,7 +99,7 @@ echo'
       <!------------------------------------->
 <?php
 	include('connect.php');
-	$sqlL="SELECT LocationName, StreetAddress, State, Zip FROM location";
+	$sqlL="SELECT LocationName, StreetAdress, State, Zip FROM location";
 	$result=$link->query($sqlL);
 //Don't know why this is on the right side of the page
 
@@ -115,7 +115,7 @@ echo'
 			while($row = $result->fetch_assoc()) {
 				echo "<tr>
 					<td>".$row["LocationName"]. "</td>
-					<td>". $row["StreetAddress"]. "</td>
+					<td>". $row["StreetAdress"]. "</td>
 					<td>" . $row["State"]."</td>
 					<td>" . $row["Zip"]."</td>
 				</tr>";
