@@ -74,7 +74,7 @@ echo"
               </div>
           </div>
       </div>
-
+    </div>
       <!--------------- Modal Code -------------->
 	  
 <?php
@@ -85,9 +85,10 @@ echo"
 			where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID and
 			workitem.LocationID=location.LocationID and workitem.DeliveryID=delivery.DeliveryID;";
 	$result=$link->query($sqlWI);
-	echo'<div class="table">';
-	echo "<h2> Displaying all Scheduled Workorders </h2>";
-			echo " <table border='1'> ";
+	echo'<div class="row tbl_space"> 
+    <div class="col-md-1"> </div>
+    <div class = "col-md-10">
+    <table>';
 			echo "<tr>
 					<th> Employee Name </th>
 					<th> Workorder ID </th>
