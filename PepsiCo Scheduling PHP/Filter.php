@@ -151,7 +151,7 @@ echo"
 					{
 						$entered=True;
 echo"		
-						<td><button value='asdas'><a href='EmployeeInfo.php' style= color:black>Edit</button></a></td>
+						<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $row['email'] . "'> <button class='btn btn-primary' type='submit'>Edit</button></form></td>
                         <td>" . $row['firstName'] . "</td>
                         <td>" . $row['lastName'] . "</td>
                         <td>" . $row['email'] . "</td>
