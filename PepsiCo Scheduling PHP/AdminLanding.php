@@ -158,7 +158,7 @@
                 </div>
                 <div class="form-group">
                     <label>Primary Phone Number</label>
-                    <input type="tel" class="form-control" name="pnum" type="phone number" minlength="10" maxlength="10" placeholder="Phone Number" required>
+                    <input type="tel" class="form-control" name="pnum" type="phone number" minlength="10" maxlength="10" placeholder="Phone Number" required> <!--modify warning if other than numbers-->
                 </div>
                 <div class="form-group">
                     <label>Password</label>
