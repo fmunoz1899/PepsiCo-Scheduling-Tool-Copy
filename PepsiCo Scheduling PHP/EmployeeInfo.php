@@ -35,11 +35,15 @@
             <div class = "formDiv1">
 <?php
 			include('connect.php');
-			$dispname="SELECT firstName, lastName FROM email, employee WHERE email.email='".$_POST['transfer']."' and email.employeeID=employee.employeeID";
-			$result=mysqli_query($link,$dispname);
-			$row = mysqli_fetch_array($result);
+			$ID=filter_var($_POST['transfer'], FILTER_SANITIZE_EMAIL);
+			$dispname=$link->prepare("SELECT firstName, lastName FROM email, employee WHERE email.email=? and email.employeeID=employee.employeeID");
+			$dispname->bind_param("s",$ID);
+			$dispname->execute();
+			$final= $dispname->get_result();
+			$row = $final->fetch_assoc();
+
 echo"
-                <h1 class='h1_1'>" . $row[0] . " " . $row[1] . "</h1>
+                <h1 class='h1_1'>" . $row['firstName'] . " " . $row['lastName'] . "</h1>
 ";			
 ?>
                 <a href = "changePass.php">Change Password</a>
@@ -61,6 +65,107 @@ echo"
 
 
          <!--------------- Modal Code -------------->
+		 <!-- make JS that makes Modal add button disabled unless one or both of the text fields are filled-->
+<?php
+include('connect.php');
+		$flag=0;
+		if((isset($_POST['addnum']) && $_POST['addnum']!='') || (isset($_POST['addemail']) && $_POST['addemail']!=''))
+		{
+			if($_POST['addnum']!='') //if the number isn't filled don't do
+			{
+				$cleannum=filter_var($_POST['addnum'],FILTER_SANITIZE_NUMBER_INT);
+				if($cleannum==$_POST['addnum']) //if original not the same as sanitized don't do
+				{
+					$numcheck=$link->prepare("SELECT phoneNumber FROM phone WHERE phoneNumber=? and type=?");
+					$typing="Work";
+					$numcheck->bind_param("ss",$cleannum,$typing);
+					$numcheck->execute();
+					$final= $numcheck->get_result();
+					$rowcount=mysqli_num_rows($final); //check if the work number is already in use
+					
+					if($rowcount==0 && $_POST['type']==filter_var($_POST['type'],FILTER_SANITIZE_STRING)) //radio button check
+					{
+						$tempID=$link->prepare("SELECT EmployeeID FROM Email WHERE Email.Email=?");
+						
+						$passed=$_POST['transfer'];
+						$tempID->bind_param("s",$passed);
+						$tempID->execute();
+						$final= $tempID->get_result();
+						$row = $final->fetch_assoc();
+						$tempID=$row['EmployeeID'];
+						
+						$qnum=$link->prepare("INSERT INTO phone VALUES(?,?,?)");
+						$qnum->bind_param("sis",$cleannum,$tempID,$_POST['type']);
+						
+						$qnum->execute();
+					}
+					else
+						$flag=$flag+20;
+					
+				}
+				
+				else
+					$flag=$flag+2;
+					
+			}
+			
+			if($_POST['addemail']!='') //if the email isn't filled don't do
+			{
+				$cleanemail=filter_var($_POST['addemail'],FILTER_SANITIZE_EMAIL);
+				if($cleanemail==$_POST['addemail']) //if original not the same as sanitized don't do
+				{
+					$emailcheck=$link->prepare("SELECT email FROM email WHERE email=? and type=?");
+					$typing="Work";
+					$emailcheck->bind_param("ss",$cleanemail,$typing);
+					$emailcheck->execute();
+					$final= $emailcheck->get_result();
+					$rowcount=mysqli_num_rows($final); //check if the work number is already in use
+					
+					if($rowcount==0)
+					{
+						$tempID=$link->prepare("SELECT EmployeeID FROM Email WHERE Email.Email=?");
+						
+						$passed=$_POST['transfer'];
+						$tempID->bind_param("s",$passed);
+						$tempID->execute();
+						$final= $tempID->get_result();
+						$row = $final->fetch_assoc();
+						$tempID=$row['EmployeeID'];
+						$temptype="Personal";
+						
+						$qemail=$link->prepare("INSERT INTO email VALUES(?,?,?)");
+						$qemail->bind_param("sis",$cleanemail,$tempID,$temptype);
+						
+						$qemail->execute();
+					}
+					else
+						$flag=$flag+30;
+					
+				}
+				
+				else
+					$flag=$flag+3;
+					
+				}
+			
+			if($flag==2)
+				echo"<script>alert('There are invaild characters in the phone number');</script>";
+			else if($flag==3)
+				echo"<script>alert('There are invaild characters in the email');</script>";
+			else if($flag==5)
+				echo"<script>alert('There are invaild characters in the phone number and email');</script>";
+			
+			if($flag==20)
+				echo"<script>alert('The phone number is in use');</script>";
+			else if($flag==30)
+				echo"<script>alert('The email is in use');</script>";
+			else if($flag==50)
+				echo"<script>alert('The phone number and email are in use');</script>";
+			
+		}
+		$link->close();
+
+?>
       <div class="modal fade" id="EmpInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -71,16 +176,21 @@ echo"
               </button>
             </div>
             <div class="modal-body modalContent">
-              <form class = "form1" action = "EmployeeInfo.html" method = "POST">
+              <form class = "form1" action = "EmployeeInfo.php" method = "POST">
+			  <input type="hidden" name="transfer" value=<?php echo filter_var($_POST['transfer'],FILTER_SANITIZE_EMAIL); ?>> <!-- this allows the primary email continue to be used for the specific employee-->
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" class="form-control" name="em" placeholder="example@pepsico.org" required>
+                    <label>Email (will be set as personal)</label>
+                    <input type="email" class="form-control" name="addemail" placeholder="example@pepsico.org">
                 </div>
                 <div class="form-group">
                     <label> Phone Number</label>
-                    <input type="tel" class="form-control" name="pnum" minlength="10" maxlength="10" placeholder="Phone Number" required>
+                    <input type="tel" class="form-control" name="addnum" minlength="10" maxlength="10" placeholder="Phone Number">
+					<input id="personal" type="radio" name="type" value="Personal" checked>
+					<label for="personal">Personal</label><br>
+					<input type="radio" id="home" name="type" value="Home">
+					<label for="home">Home</label>
                 </div>
-                <button type="submit" name="submit" class="btn btn-primary">Create</button> 
+                <button type="submit" name="submit" class="btn btn-primary">Add</button> 
               </form>
             </div>
             <div class="modal-footer">
@@ -130,64 +240,60 @@ echo"
 			$row = mysqli_fetch_array($result);-->
 <?php
 include('connect.php');
-/*
-SELECT Email
-from Email
-where email.EmployeeID=
-(select  EmployeeID
- from Email
- where Email.Email='r')
- */
- 
- /*SELECT phoneNumber FROM phone WHERE phone.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?)*/
  
 		$ID=filter_var($_POST['transfer'], FILTER_SANITIZE_EMAIL);
 
-		$soloemail=$link->prepare("SELECT email FROM Email WHERE email.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?)");
+		$soloemail=$link->prepare("SELECT email, type FROM Email WHERE email.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?)");
 		$soloemail->bind_param("s",$ID);
 		
 		
-		$solonum=$link->prepare("SELECT phoneNumber FROM phone WHERE phone.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?)");
+		$solonum=$link->prepare("SELECT phoneNumber, type FROM phone WHERE phone.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?)");
 		$solonum->bind_param("s",$ID);
 	
 			
 		$soloemail->execute();
-		
-		
-		//echo var_dump($soloemail);
-		//echo var_dump($solonum);
-		
 		$finalem=$soloemail->get_result();
 		
-		
-		//$numrow=$finalnum->fetch_assoc();
-		
- //This area is still not !00% complete just table issues
+
 echo"
         <div class='row tbl_space'> 
-            <div class='col-md-3'> </div>
-            <div class = 'col-md-7'>
+            <div class='col-md-2'> </div>
+            <div class = 'col-md-4'>
                 <table>
                     <tr>
                       <th>Emails</th>
-                      <th>Phone Numbers</th>
-                    </tr>
-                    ";
+					  <th>Type</th>
+                    </tr>";
 					
 					while($emrow=$finalem->fetch_assoc())
-echo"                 <td>" . $emrow['email'] . "</td></tr>";
+					{
+echo"                  <td>" . $emrow['email'] . "</td>
+				       <td>" . $emrow['type'] . "</td></tr>";
+					}
+echo"				</table></div>";
 
 					$solonum->execute();
 					$finalnum=$solonum->get_result();
+	
+echo"
+			<div class='col-md-4'>
+				<table>
+					<tr>
+						<th>Phone Numbers</th>
+						<th>Type</th>
+					</tr>";
 					
 					while($numrow=$finalnum->fetch_assoc())
+					{
 echo"                 <td>" . $numrow['phoneNumber'] . "</td>
-                    </tr>
-";
+    				  <td>" . $numrow['type'] . "</td></tr>";
+					}
+echo"				</div>";
+					
 ?>
 				</table>
             </div>
-            <div class="col-md-1"> </div>
+            <div class="col-md-2"> </div>
         </div>
            
     </body>
