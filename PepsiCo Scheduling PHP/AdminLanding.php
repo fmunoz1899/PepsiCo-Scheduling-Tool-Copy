@@ -35,32 +35,21 @@
             <div>
                 <h1 class="h1_1">Displaying all Employees</h1>
             </div>
- <?php 
- //I believe in order to do the filter, it's going to need to be JS and done dynamically 
-	include('connect.php');
-	$names="SELECT firstName, lastName, EmployeeID FROM employee"; //no user input therefore no need to prepare and bind
-	$result=$link->query($names);
-echo" 
 			
-            <div class='row div_space'> 
-                <div class='col-md-1'> </div>
-                <div class='col-md-4'> 
-                    <label>Select employee to filter results:</label>
+			
+			<div class="row div_space">
+				<div class="col-md-1"></div>
+				<div class="col-md-7"> <!-- fuck this fix it please thanks -->
+					<form method="POST" action="Filter.php" class = "form2">
+						<label>Search for an Employee:</label>
+						<input type="text" name="filterbutton" placeholder="First and/or Last name" required>
+						<button class="btn btn-primary" type="submit">Filter</button>
+					</form>
+				</div>
+			</div>
 					
-                    <select name='employees' id='emps'>
-						<option value=-1>None</option>"; //no empID can be -1
-                        while($row=$result->fetch_assoc()) 
-							echo"<option value=" . $row['EmployeeID'] . ">" . $row['firstName'] . " " . $row['lastName'] . "</option>"; //have the empID as the value for the filter
-echo"
-                    </select>
-                </div>
-				
-				
-				
-	";
-	mysqli_close($link);
- ?>              
-          </div>
+					
+
           <div class="row "> 
             <div class="col-md-9"> </div>
                 <div class="col-md-3">
@@ -84,10 +73,34 @@ echo"
 				$cleanpnum=filter_var($_POST['pnum'], FILTER_SANITIZE_NUMBER_INT);
 				$cleanpword=filter_var($_POST['pword'], FILTER_SANITIZE_STRING);
 				
-				if($_POST['fname']!=$cleanfname || $cleanlname!=$_POST['lname'] || $cleanem!=$_POST['em'] || $_POST['pnum']!=$cleanpnum || $cleanpword!= $_POST['pword'])
+				$emailcheck=$link->prepare("SELECT email FROM email WHERE email.email=?");
+				$emailcheck->bind_param("s",$cleanem);
+				
+				$emailcheck->execute();
+				$final= $emailcheck->get_result();
+				$rowcount=mysqli_num_rows($final);
+				
+				$numcheck=$link->prepare("SELECT phoneNumber FROM phone WHERE phone.phoneNumber=?");
+				$numcheck->bind_param("s",$cleanpnum);
+				
+				$numcheck->execute();
+				$final2= $numcheck->get_result();
+				$rowcount2=mysqli_num_rows($final2);
+			
+				
+				if($rowcount>0 && $rowcount2>0) 
+					echo "<script>alert('The email and phone number is already in use');</script>"; //warning if phone and email is already in use
+					
+				else if($rowcount2>0)
+					echo "<script>alert('The phone number is already in use');</script>"; //warning if phone is already in use
+					
+				else if($rowcount>0)
+					echo "<script>alert('The email is already in use');</script>"; //warning if email is already in use
+				
+				else if($_POST['fname']!=$cleanfname || $cleanlname!=$_POST['lname'] || $cleanem!=$_POST['em'] || $_POST['pnum']!=$cleanpnum || $cleanpword!= $_POST['pword'])
 					echo "<script>alert('There are invalid characters in the input values, please try again');</script>"; //warning to say not same as after sanitization
-				
-				
+					
+							
 				else
 				{
 					$emptable=$link->prepare("insert into employee values(default,?,?,?)");
@@ -202,9 +215,9 @@ echo"
                       <td>jd2301@pepsico.org</td>
                       <td>9147852654</td>
                       <td></td>
-					  <td>E</td>
+					  <td></td>
                     </tr>
-                    <tr>"; //this will be left here for now as way to remember to do the edit and remove, whether it be button or hyperlink
+                    <tr>"; // ^^this will be left here for now as way to remember to do the edit and remove, whether it be button or hyperlink
 					
 					$peopleinfo="SELECT firstName, lastName, email, phoneNumber, PrivilegeID 
 					FROM employee, employeeprivlege, email, phone 
@@ -219,18 +232,20 @@ echo"
 					while($row=$result->fetch_assoc())
 					{
 echo"					
-						<td><button value='asdas'><a href='EmployeeInfo.php' style= color:black>Edit</button></a></td>
+						<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $row['email'] . "'> <button class='btn btn-primary' type='submit'>Edit</button></form></td>
                         <td>" . $row['firstName'] . "</td>
                         <td>" . $row['lastName'] . "</td>
                         <td>" . $row['email'] . "</td>
                         <td>" . $row['phoneNumber'] . "</td>
-                        <td>Schedule Info Here</td>
+                        <td>Schedule Info Here</td>  <!-- this is where the schedule will be placed -->
 						<td>" . $row['PrivilegeID'] . "</td>
                       </tr>
 					  ";
 					}
 	$link->close();
 					?>
+					
+					
 				  
                   </table>
             </div>
@@ -238,5 +253,4 @@ echo"
         </div>  
     </body>
 </html>
-
 
