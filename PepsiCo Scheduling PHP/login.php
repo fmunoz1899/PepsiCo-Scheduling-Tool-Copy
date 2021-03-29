@@ -19,9 +19,10 @@
 	{
 		$emailcheck= filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
 		$passwordcheck= filter_var($_POST['Epassword'], FILTER_SANITIZE_STRING);
+		$typing="Work";
 		
-		$result = $link->prepare("SELECT employeeprivlege.PrivilegeID, employeeprivlege.EmployeeID FROM employeeprivlege, email, employee WHERE Email.Email=? and email.EmployeeID= employeeprivlege.EmployeeID and email.EmployeeID=employee.EmployeeID and employee.Epassword=?") ;
-		$result->bind_param("ss",$emailcheck,$passwordcheck);
+		$result = $link->prepare("SELECT employeeprivlege.PrivilegeID, employeeprivlege.EmployeeID, email.type FROM employeeprivlege, email, employee WHERE Email.type=? and Email.Email=? and email.EmployeeID= employeeprivlege.EmployeeID and email.EmployeeID=employee.EmployeeID and employee.Epassword=?") ;
+		$result->bind_param("sss",$typing,$emailcheck,$passwordcheck);
 	
 		if($result->execute())
 		{
@@ -109,7 +110,7 @@
                     <button type="submit" name="submit" class="btn btn-primary">Log In</button>           
             </form>
             <div id="err" class = "div1 text-danger"></div>
-                <a href = "List_View.html"><button class="button2">TEMP TO GET TO PAGE</button></a> 
+                <a href = "List_View.php"><button class="button2">TEMP TO GET TO PAGE</button></a> 
                 <!--<a href = "AdminLanding.html"><button class="button2">TEMP TO GET TO ADMIN</button></a> use log in to get to admin -->
        
     </body>
