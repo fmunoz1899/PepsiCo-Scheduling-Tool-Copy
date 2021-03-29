@@ -208,16 +208,7 @@ echo"
                       <th>Schedule Information</th>
 					  <th>Role</th>
                     </tr>
-                    <tr>
-					  <td></td>
-                      <td><a href = 'EmployeeInfo.php'>John </a></td>
-                      <td>Doe</td>
-                      <td>jd2301@pepsico.org</td>
-                      <td>9147852654</td>
-                      <td></td>
-					  <td></td>
-                    </tr>
-                    <tr>"; // ^^this will be left here for now as way to remember to do the edit and remove, whether it be button or hyperlink
+                    <tr>"; 
 					
 					$peopleinfo="SELECT firstName, lastName, email, phoneNumber, PrivilegeID 
 					FROM employee, employeeprivlege, email, phone 
