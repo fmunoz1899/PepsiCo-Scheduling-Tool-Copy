@@ -21,9 +21,9 @@
     <body>
         <nav class="navbar navbar-expand-sm fixed-top nav">
             <ul class="navbar-nav">	
-              <li class="nav-item active"><a class="nav-link" href="List_View.html">Schedule</a></li>
+              <li class="nav-item active"><a class="nav-link" href="List_View.php">Schedule</a></li>
               <li class="nav-item active"><a class="nav-link a2" href="employees.html">Employees</a></li>
-              <li class="nav-item active"><a class="nav-link a2" href="locations.html">Locations</a></li>
+              <li class="nav-item active"><a class="nav-link a2" href="location.php">Locations</a></li>
   
         </nav>
         <div class="jumbotron text-center jumbotron2">
