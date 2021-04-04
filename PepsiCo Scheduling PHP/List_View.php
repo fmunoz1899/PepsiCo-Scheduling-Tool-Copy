@@ -21,9 +21,9 @@
     <body>
         <nav class="navbar navbar-expand-sm fixed-top nav">
           <ul class="navbar-nav">	
-            <li class="nav-item active"><a class="nav-link" href="List_View.html">Schedule</a></li>
-            <li class="nav-item active"><a class="nav-link a2" href="employees.html">Employees</a></li>
-            <li class="nav-item active"><a class="nav-link a2" href="locations.html">Locations</a></li>
+            <li class="nav-item active"><a class="nav-link" href="List_View.php">Schedule</a></li>
+            <li class="nav-item active"><a class="nav-link a2" href="employees.php">Employees</a></li>
+            <li class="nav-item active"><a class="nav-link a2" href="location.php">Locations</a></li>
 
       </nav>
 
@@ -74,7 +74,7 @@ echo"
               </div>
           </div>
       </div>
-    </div>
+</div>
       <!--------------- Modal Code -------------->
 	  
 <?php
@@ -85,11 +85,12 @@ echo"
 			where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID and
 			workitem.LocationID=location.LocationID and workitem.DeliveryID=delivery.DeliveryID;";
 	$result=$link->query($sqlWI);
-	echo'<div class="row tbl_space"> 
-    <div class="col-md-1"> </div>
-    <div class = "col-md-10">
-    <table>';
-			echo "<tr>
+	echo'<div class="row tbl_space">';
+
+    echo "<div class='col-md-1'> </div>";
+        echo "<div class = 'col-md-10'>";
+          echo " <table> ";
+          echo "<tr>
 					<th> Employee Name </th>
 					<th> Workorder ID </th>
 					<th> Location </th>
