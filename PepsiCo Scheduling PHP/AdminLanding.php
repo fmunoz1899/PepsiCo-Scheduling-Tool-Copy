@@ -42,7 +42,7 @@
 				<div class="col-md-7"> <!-- fuck this fix it please thanks -->
 					<form method="POST" action="Filter.php" class = "form2">
 						<label>Search for an Employee:</label>
-						<input type="text" name="filterbutton" placeholder="First and/or Last name" required>
+						<input type="text" name="filterbutton" placeholder="First and/or Last name" required> <!-- might need to change so it can filter by first and last name separately-->
 						<button class="btn btn-primary" type="submit">Filter</button>
 					</form>
 				</div>
@@ -62,7 +62,22 @@
          <!--------------- Modal Code -------------->
 <?php
 	include('connect.php');
+	
+	session_start();
+	
+		/*$time= $_SERVER['REQUEST_TIME'];
+		$timeout=300;
+	
+			if(isset($_SESSION['last'])===true && ($time-$_SESSION['last'])>$timeout)
+			{
+				header("location:login.php?st=".rand());
+				exit;
+			}
+			
+		$_SESSION['last']=$time;*/
 
+	if(isset($_SESSION['admin']) && $_SESSION['admin']===true)
+	{
 		if(isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['em']) && isset($_POST['pnum']) && isset($_POST['pword']) && isset($_POST['pwordc']))
 		{
 			if($_POST['pword']==$_POST['pwordc'])
@@ -121,7 +136,7 @@
 					$numprep->execute();
 					
 					$emppriv="INSERT into employeeprivlege values(" . $row['Max(EmployeeID)'] . ", '" . $_POST['role'] . "')";
-					mysqli_query($link,$emppriv);
+					mysqli_real_query($link,$emppriv);
 				
 					header("Refresh:0"); //to force refresh to show new employee in filter
 				}
@@ -131,7 +146,10 @@
 				echo"<script>alert('Your passwords do not match!')</script>";
 		}
 		$link->close();
-		
+	}
+	
+	else
+		header("location:login.php?amdin_no_admintok");
 ?>
       <div class="modal fade" id="newEmp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -175,6 +193,7 @@
                     <label>Employee Role</label><br/>
                     <select class = "checkSpace" name = "role">
                         <option value = "E"> Engineer </option> 
+                        <option value = "M"> Manager </option> 
                         <option value = "M"> Manager </option> 
                         <option value = "A"> Admin </option> 
                     </select>
