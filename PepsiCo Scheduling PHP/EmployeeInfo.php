@@ -34,19 +34,47 @@
 
             <div class = "formDiv1">
 <?php
-			include('connect.php');
-			$ID=filter_var($_POST['transfer'], FILTER_SANITIZE_EMAIL);
-			$dispname=$link->prepare("SELECT firstName, lastName FROM email, employee WHERE email.email=? and email.employeeID=employee.employeeID");
-			$dispname->bind_param("s",$ID);
-			$dispname->execute();
-			$final= $dispname->get_result();
-			$row = $final->fetch_assoc();
 
-echo"
-                <h1 class='h1_1'>" . $row['firstName'] . " " . $row['lastName'] . "</h1>
-";			
+
+			include('connect.php');
+			session_start();
+			
+			/*$time= $_SERVER['REQUEST_TIME'];
+			$timeout=300; 
+	
+			if(isset($_SESSION['last'])===true && ($time-$_SESSION['last'])>$timeout)
+			{
+				header("location:login.php?st=".rand());
+				exit;
+			}
+			
+			$_SESSION['last']=$time;*/
+			
+			if(isset($_POST['transfer']))
+			{
+				$ID=filter_var($_POST['transfer'], FILTER_SANITIZE_EMAIL);
+				$dispname=$link->prepare("SELECT firstName, lastName FROM email, employee WHERE email.email=? and email.employeeID=employee.employeeID");
+				$dispname->bind_param("s",$ID);
+				$dispname->execute();
+				$final= $dispname->get_result();
+				$row = $final->fetch_assoc();
+
+		echo"
+				<h1 class='h1_1'>" . $row['firstName'] . " " . $row['lastName'] . "</h1>
+";			}
+
+			else
+			{
+				header("location:login.php?empinfo_no_transfer");
+				exit;
+			}
 ?>
-                <a href = "changePass.php">Change Password</a>
+				<form method="POST" action="changePass.php">
+				<?php
+				$clean=filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL);
+echo"			<input type='hidden' value='".$clean."' name='transfer'> ";?>
+				<button class='btn btn-primary' type='submit'>Change Password</button>
+				</form> 
           </div>
                
             </div>
@@ -69,6 +97,7 @@ echo"
 <?php
 include('connect.php');
 		$flag=0;
+		
 		if((isset($_POST['addnum']) && $_POST['addnum']!='') || (isset($_POST['addemail']) && $_POST['addemail']!=''))
 		{
 			if($_POST['addnum']!='') //if the number isn't filled don't do
@@ -177,7 +206,7 @@ include('connect.php');
             </div>
             <div class="modal-body modalContent">
               <form class = "form1" action = "EmployeeInfo.php" method = "POST">
-			  <input type="hidden" name="transfer" value=<?php echo filter_var($_POST['transfer'],FILTER_SANITIZE_EMAIL); ?>> <!-- this allows the primary email continue to be used for the specific employee-->
+			  <input type="hidden" name="transfer" value=<?php echo filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL);?>><!-- this allows the primary email continue to be used for the specific employee-->
                 <div class="form-group">
                     <label>Email (will be set as personal)</label>
                     <input type="email" class="form-control" name="addemail" placeholder="example@pepsico.org">
