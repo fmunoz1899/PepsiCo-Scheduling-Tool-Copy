@@ -46,17 +46,27 @@
 				
 			$_SESSION['last']=$time;*/
 		
-		if(isset($_POST['filterbutton']))
+		if(isset($_SESSION['admin']))
 		{
-			$cleanfilter=filter_var(htmlentities($_POST['filterbutton'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
 			
-echo"		<h1 class='h1_1'>Filtered Results For: \"" . $cleanfilter . "\" </h1></div>";
+		if((isset($_POST['filterfirst']) && $_POST['filterfirst']!='') || (isset($_POST['filterlast']) && $_POST['filterlast']!=''))
+		{
+			$cleanfirst=filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
+			$cleanlast=filter_var(htmlentities($_POST['filterlast'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
+			
+echo"		<h1 class='h1_1'>Filtered Results For: " . $cleanfirst . " " . $cleanlast . " </h1></div>";
 		}
 		
 		
 		else
 		{
-			header("location:login.php?filter_no_transfer");
+			header("location:adminlanding.php?filter_no_transfer");
+			exit;
+		}
+		}
+		else
+		{
+			header("location:login.php?filter_no_admintok");
 			exit;
 		}
 ?>
@@ -88,9 +98,11 @@ echo"
                     </tr>
                     <tr>"; //this will be left here for now as way to remember to do the edit and remove, whether it be button or hyperlink
 					
-					$search=filter_var($_POST['filterbutton'], FILTER_SANITIZE_STRING);
-					$search="%".$search."%";
-					
+					$searchfirst=filter_var($_POST['filterfirst'], FILTER_SANITIZE_STRING);
+					$searchlast=filter_var($_POST['filterlast'], FILTER_SANITIZE_STRING);
+					$searchfirst="%".$searchfirst."%";
+					$searchlast="%".$searchlast."%";
+
 					$peopleinfo=$link->prepare("SELECT firstName, lastName, email, phoneNumber, PrivilegeID 
 					FROM employee, employeeprivlege, email, phone 
 					where employee.EmployeeID=email.EmployeeID 
@@ -98,9 +110,9 @@ echo"
 					and employee.EmployeeID=phone.EmployeeID 
 					and phone.Type='Work' 
 					and employee.EmployeeID=employeeprivlege.EmployeeID
-					and (firstName LIKE ? or lastName LIKE ?)");
+					and (firstName LIKE ? and lastName LIKE ?)"); 
 					
-					$peopleinfo->bind_param("ss",$search,$search);
+					$peopleinfo->bind_param("ss",$searchfirst,$searchlast);
 					$peopleinfo->execute();
 					$result=$peopleinfo->get_result();
 					$entered=False;
@@ -118,8 +130,8 @@ echo"
                       </tr>
 					  ";
 					}
-					if($entered!=True)
-						echo"<script>alert('There are no search results!'); window.location='AdminLanding.php'; </script>"; //displays message of no results and sends back to adminlanding
+					if($entered!=True);
+						//echo"<script>alert('There are no search results!'); window.location='AdminLanding.php'; </script>"; //displays message of no results and sends back to adminlanding
 
 					
 	$link->close();
