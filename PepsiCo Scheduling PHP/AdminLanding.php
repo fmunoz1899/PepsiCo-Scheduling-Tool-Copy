@@ -42,7 +42,9 @@
 				<div class="col-md-7"> <!-- fuck this fix it please thanks -->
 					<form method="POST" action="Filter.php" class = "form2">
 						<label>Search for an Employee:</label>
-						<input type="text" name="filterbutton" placeholder="First and/or Last name" required> <!-- might need to change so it can filter by first and last name separately-->
+						<input type="text" name="filterfirst" placeholder="First Name"> <!-- might need to change so it can filter by first and last name separately-->
+						<br>
+						<input type="text" name="filterlast" placeholder="Last Name"> <!-- might need to change so it can filter by first and last name separately-->
 						<button class="btn btn-primary" type="submit">Filter</button>
 					</form>
 				</div>
