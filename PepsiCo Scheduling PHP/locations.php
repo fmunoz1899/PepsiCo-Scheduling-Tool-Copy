@@ -35,7 +35,9 @@
                 <h1 class="h1_1">Displaying All Locations</h1>
             </div>
 <?php
-    include('connect.php');    
+    include('connect.php');   
+	session_start();
+		
 	$LocationName="SELECT LocationName, LocationID FROM location";
 	$result=$link->query($LocationName);
 echo" 
@@ -64,7 +66,7 @@ echo'
 <?php
 	include('connect.php');
 	
-	if(isset($_POST['LocationName']) && isset($_POST['Address']) && isset($_POST['state']) && isset($_POST['ZipCode']) && isset($_POST['city']))
+	if(isset($_POST['LocationName']) && isset($_POST['Address']) && isset($_POST['state']) && isset($_POST['ZipCode']) && isset($_POST['city']) && $_POST['state']!='stop')
 	{
 		$cleanloc=filter_var($_POST['LocationName'], FILTER_SANITIZE_STRING);
 		$cleanadd=filter_var($_POST['Address'], FILTER_SANITIZE_STRING);
@@ -107,8 +109,9 @@ echo'
 				<input type="text" name="city" required>
 				</p>
                 <p>State: 
-                <select name="state" id="state">
-				  <option value="AL" selected>Alabama</option>
+                <select name="state" id="state">  <!--insert JS to make sure that --Select One-- is not submitted-->
+				  <option value="none" selected>--Select One--</option>
+				  <option value="AL">Alabama</option>
 				  <option value="AK">Alaska</option>
 				  <option value="AZ">Arizona</option>
 				  <option value="AR">Arkansas</option>
@@ -164,7 +167,7 @@ echo'
                 <p>Zip Code: 
                   <input type="text" name="ZipCode" minlength="5" maxlength="5" required> <!-- make it so it is just 5 numbers -->
                 </p>
-				<button type="submit" name="submit" class="btn btn-primary">Enter</button> 
+				<button type="submit" name="submit2" id="submit2" class="submit2"  disabled>Enter</button> 
               </form>
             </div>
             <div class="modal-footer">
