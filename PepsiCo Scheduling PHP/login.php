@@ -5,15 +5,17 @@
 	$_SESSION = array();
 	session_destroy();
 	
-	if(isset($_SESSION["entered"]) && $_SESSION["entered"] === true)
+	/*if(isset($_SESSION["entered"]) && $_SESSION["entered"] === true) 
     {
 		header("location: login.php");
 		exit;
-	}
+	}*/ //not sure what this is for even tho i wrote it 
 
+	if(isset($_GET['st'])) //is ok to be get as there is no importance to this number
+		echo"<script>alert('You have been inactive for 5 minutes');</script>";
+	
 	$Email="";
 	$Epassword="";
-	
 	
 	if (isset($_POST['Email']) && isset($_POST['Epassword']))
 	{
@@ -33,14 +35,14 @@
 				$row = $final->fetch_assoc();
                 session_start();
                 $_SESSION["entered"]= true;
-                $_SESSION['username']= $row['EmployeeID']; //session that has the employee ID
+				$_SESSION['last']=$_SERVER['REQUEST_TIME'];
+                //$_SESSION['username']= $row['EmployeeID']; //session that has the employee ID not sure if really needed
 				
 		
                 if($row['PrivilegeID']=='A')
 				{
-					echo "<script>alert('This would lead to the ADMIN page!')</script>";
-					 header("location:AdminLanding.php"); 
-					//header("location:admin.php"); 
+					$_SESSION['admin']=true;
+					header("location:AdminLanding.php"); 
 				}						
 				
 				else if($row['PrivilegeID']=='M')
