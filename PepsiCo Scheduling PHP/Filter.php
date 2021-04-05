@@ -34,10 +34,31 @@
 
             <div>
 <?php
-echo"
-                <h1 class='h1_1'>Filtered Results For: \"" . $_POST['filterbutton'] . "\" </h1>
-            </div>
-			";
+		session_start();
+			/*$time= $_SERVER['REQUEST_TIME'];
+			$timeout=5;
+		
+				if(isset($_SESSION['last'])===true && ($time-$_SESSION['last'])>$timeout)
+				{
+					header("location:login.php?st=".rand());
+					exit;
+				}
+				
+			$_SESSION['last']=$time;*/
+		
+		if(isset($_POST['filterbutton']))
+		{
+			$cleanfilter=filter_var(htmlentities($_POST['filterbutton'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
+			
+echo"		<h1 class='h1_1'>Filtered Results For: \"" . $cleanfilter . "\" </h1></div>";
+		}
+		
+		
+		else
+		{
+			header("location:login.php?filter_no_transfer");
+			exit;
+		}
 ?>
  
           </div>
@@ -48,61 +69,6 @@ echo"
                 </div>
             </div>
         </div>
-
-
-         <!--------------- Modal Code -------------->
-<?php
-	include('connect.php');
-
-		if(isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['em']) && isset($_POST['pnum']) && isset($_POST['pword']) && isset($_POST['pwordc']))
-		{
-			if($_POST['pword']==$_POST['pwordc'])
-			{
-				$cleanfname=filter_var($_POST['fname'], FILTER_SANITIZE_STRING);
-				$cleanlname=filter_var($_POST['lname'], FILTER_SANITIZE_STRING);
-				$cleanem=filter_var($_POST['em'], FILTER_SANITIZE_EMAIL);
-				$cleanpnum=filter_var($_POST['pnum'], FILTER_SANITIZE_NUMBER_INT);
-				$cleanpword=filter_var($_POST['pword'], FILTER_SANITIZE_STRING);
-				
-				if($_POST['fname']!=$cleanfname || $cleanlname!=$_POST['lname'] || $cleanem!=$_POST['em'] || $_POST['pnum']!=$cleanpnum || $cleanpword!= $_POST['pword'])
-					echo "<script>alert('There are invalid characters in the input values, please try again');</script>"; //warning to say not same as after sanitization
-				
-				
-				else
-				{
-					$emptable=$link->prepare("insert into employee values(default,?,?,?)");
-					$emptable->bind_param("sss",$cleanfname,$cleanlname,$cleanpword);
-					$emptable->execute(); 
-					
-					$empid="SELECT Max(EmployeeID) FROM employee"; //does not need to be bind or prepared as no user input !!might need to be changed!!
-					$result=mysqli_query($link,$empid);
-					$row = mysqli_fetch_array($result);
-					
-					$emailprep=$link->prepare("INSERT into email values(?," . $row['Max(EmployeeID)'] . ",'Work')");
-					$emailprep->bind_param("s",$cleanem);
-					$emailprep->execute();
-					
-					
-					$numprep=$link->prepare("INSERT into phone values(?," . $row['Max(EmployeeID)'] . ",'Work')");
-					$numprep->bind_param("s",$cleanpnum);
-					$numprep->execute();
-					
-					$emppriv="INSERT into employeeprivlege values(" . $row['Max(EmployeeID)'] . ", '" . $_POST['role'] . "')";
-					mysqli_query($link,$emppriv);
-				
-					header("Refresh:0"); //to force refresh to show new employee in filter
-				}
-			}
-			
-			else
-				echo"<script>alert('Your passwords do not match!')</script>";
-		}
-		$link->close();
-		
-?>
-     
-
-      <!------------------------------------->
 <?php
 include('connect.php');
 
@@ -112,22 +78,13 @@ echo"
             <div class = 'col-md-10'>
 			<table>
                     <tr>
-					  <th>Edit</th> <!-- this still needs to send the emp id to be able to edit properly -->
+					  <th>Edit</th>
                       <th>First Name</th>
                       <th>Last Name</th>
                       <th>Primary Email	</th>
                       <th>Primary Phone Number</th>
                       <th>Schedule Information</th>
 					  <th>Role</th>
-                    </tr>
-                    <tr>
-					  <td></td>
-                      <td><a href = 'EmployeeInfo.php'>John </a></td>
-                      <td>Doe</td>
-                      <td>jd2301@pepsico.org</td>
-                      <td>9147852654</td>
-                      <td></td>
-					  <td>E</td>
                     </tr>
                     <tr>"; //this will be left here for now as way to remember to do the edit and remove, whether it be button or hyperlink
 					
