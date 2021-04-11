@@ -46,7 +46,7 @@
 				
 			$_SESSION['last']=$time;*/
 		
-		if(isset($_SESSION['admin']))
+		if(isset($_SESSION['admin']) && $_SESSION['admin']===true)
 		{
 			
 		if((isset($_POST['filterfirst']) && $_POST['filterfirst']!='') || (isset($_POST['filterlast']) && $_POST['filterlast']!=''))
