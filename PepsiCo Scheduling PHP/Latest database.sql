@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `location` (
   `LocationName` varchar(45) NOT NULL,
   `StreetAdress` varchar(45) NOT NULL,
   `City` varchar(45) NOT NULL,
-  `State` varchar(20) NOT NULL,
+  `State` varchar(2) NOT NULL,
   `Zip` int(5) NOT NULL,
   PRIMARY KEY (`LocationID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
