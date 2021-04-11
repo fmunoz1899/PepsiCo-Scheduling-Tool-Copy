@@ -1,0 +1,6 @@
+4/11
+ahours: DayID has changed to accept a max of 3 chars
+ahours: the start and end times can now be null (every employee made will get 7 days all of which will be null)
+phone: both the phoneNumber and employeeID as primary keys
+email: both the email and employeeID as primary keys
+location: state changed to accept a max of 2 chars
