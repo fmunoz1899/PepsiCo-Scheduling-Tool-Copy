@@ -66,7 +66,7 @@ echo'
 <?php
 	include('connect.php');
 	
-	if(isset($_POST['LocationName']) && isset($_POST['Address']) && isset($_POST['state']) && isset($_POST['ZipCode']) && isset($_POST['city']) && $_POST['state']!='stop')
+	if(isset($_POST['LocationName']) && isset($_POST['Address']) && isset($_POST['state']) && isset($_POST['ZipCode']) && isset($_POST['city']) && $_POST['state']!='')
 	{
 		$cleanloc=filter_var($_POST['LocationName'], FILTER_SANITIZE_STRING);
 		$cleanadd=filter_var($_POST['Address'], FILTER_SANITIZE_STRING);
@@ -83,7 +83,7 @@ echo'
 		
 		else
 		{
-			echo"<script>alert('make sure you enter appropriate characters try again');</script>";
+			echo"<script>alert('make sure you enter appropriate characters try again');</script>"; //make sentence more clear
 		}
 	}
 
@@ -109,8 +109,8 @@ echo'
 				<input type="text" name="city" required>
 				</p>
                 <p>State: 
-                <select name="state" id="state">  <!--insert JS to make sure that --Select One-- is not submitted-->
-				  <option value="none" selected>--Select One--</option>
+                <select name="state" id="state" required>  <!--insert JS to make sure that --Select One-- is not submitted-->
+				  <option value="" selected>--Select One--</option>
 				  <option value="AL">Alabama</option>
 				  <option value="AK">Alaska</option>
 				  <option value="AZ">Arizona</option>
@@ -167,7 +167,7 @@ echo'
                 <p>Zip Code: 
                   <input type="text" name="ZipCode" minlength="5" maxlength="5" required> <!-- make it so it is just 5 numbers -->
                 </p>
-				<button type="submit" name="submit2" id="submit2" class="submit2"  disabled>Enter</button> 
+				 <button type="submit" name="submit" class="btn btn-primary">Enter</button> 
               </form>
             </div>
             <div class="modal-footer">
