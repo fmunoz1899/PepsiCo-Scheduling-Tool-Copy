@@ -54,8 +54,14 @@ include('connect.php');
 				{
 					$cleanpword=filter_var($_POST['pword'],FILTER_SANITIZE_STRING);
 					$cleancheck=filter_var($_POST['pwordc'],FILTER_SANITIZE_STRING);
+					
+					if($_POST['pword']!=$_POST['pwordc'])
+						echo"<script>alert('Your passwords do not match');</script>";
+					
+					else if($cleanpword!=$_POST['pword'] && $cleancheck!=$_POST['pwordc'])
+						echo"<script>alert('Invalid Characters');</script>";
 
-					if($_POST['pword']==$_POST['pwordc'] && $cleanpword==$_POST['pword'] && $cleancheck==$_POST['pwordc'])
+					else if($_POST['pword']==$_POST['pwordc'] && $cleanpword==$_POST['pword'] && $cleancheck==$_POST['pwordc'])
 					{
 						$update=$link->prepare("UPDATE employee SET epassword=? WHERE employee.employeeID=?");
 						$update->bind_param("si",$cleanpword, $row['employeeID']);
@@ -64,7 +70,7 @@ include('connect.php');
 					}
 					
 					else
-						echo"<script>alert('the passwords has invalid characters or the passwords are not the same');</script>"; //need to change later on but basic warning sign for now
+						echo"<script>alert('this should be happening');</script>"; //need to change later on but basic warning sign for now
 				}
 			}
 			else
