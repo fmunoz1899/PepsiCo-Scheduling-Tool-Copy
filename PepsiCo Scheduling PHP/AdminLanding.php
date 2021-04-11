@@ -80,6 +80,35 @@
 
 	if(isset($_SESSION['admin']) && $_SESSION['admin']===true)
 	{
+		
+		if(isset($_POST['transfer'])) //make sure to make it check if the worker being removed is not scheduled for a work order
+		{
+			
+			$clean=filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL); // to get the users empID
+			$empid=$link->prepare("SELECT email.employeeID, firstName, lastName FROM email, employee WHERE email.email=? and email.EmployeeID=employee.EmployeeID");
+			$empid->bind_param("s",$clean);
+			$empid->execute();
+			$result=$empid->get_result();
+			$row=$result->fetch_assoc();
+			
+			$check=$link->prepare("SELECT employeeID FROM workitem WHERE EmployeeID=?");
+			$check->bind_param("i",$row['employeeID']);
+			$check->execute();
+			
+			$final= $check->get_result();
+            $rowcount=mysqli_num_rows($final);
+			
+			if($rowcount==0)
+			{
+				$remove=$link->prepare("DELETE email, employee, phone, employeeprivlege, ahours FROM email INNER JOIN employee on  employee.EmployeeID=email.EmployeeID INNER JOIN phone on phone.EmployeeID=employee.EmployeeID INNER JOIN employeeprivlege on employeeprivlege.EmployeeID=employee.EmployeeID INNER JOIN ahours on ahours.employeeID=employeeprivlege.employeeID WHERE email.EmployeeID=?");
+				$remove->bind_param("i",$row['employeeID']);
+				$remove->execute();
+				echo"<script>alert('" . $row['firstName'] . " " . $row['lastName'] . " was removed!')</script>";
+			}
+			else
+				echo"<script>alert('" . $row['firstName'] . " " . $row['lastName'] . " is scheduled to work!')</script>";
+		}
+		
 		if(isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['em']) && isset($_POST['pnum']) && isset($_POST['pword']) && isset($_POST['pwordc']))
 		{
 			if($_POST['pword']==$_POST['pwordc'])
@@ -139,6 +168,21 @@
 					
 					$emppriv="INSERT into employeeprivlege values(" . $row['Max(EmployeeID)'] . ", '" . $_POST['role'] . "')";
 					mysqli_real_query($link,$emppriv);
+					
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Sun', default, default)";
+					mysqli_real_query($link,$hours);
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Mon', default, default)";
+					mysqli_real_query($link,$hours);
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Tue', default, default)";
+					mysqli_real_query($link,$hours);
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Wed', default, default)";
+					mysqli_real_query($link,$hours);
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Thr', default, default)";
+					mysqli_real_query($link,$hours);
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Fri', default, default)";
+					mysqli_real_query($link,$hours);
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Sat', default, default)";
+					mysqli_real_query($link,$hours);
 				
 					header("Refresh:0"); //to force refresh to show new employee in filter
 				}
@@ -226,12 +270,18 @@ echo"
                       <th>Last Name</th>
                       <th>Primary Email	</th>
                       <th>Primary Phone Number</th>
-                      <th>Schedule Information</th>
+					  <th>Sunday</th>
+					  <th>Monday</th>
+					  <th>Tuesday</th>
+					  <th>Wednesday</th>
+					  <th>Thursday</th>
+					  <th>Friday</th>
+					  <th>Saturday</th>
 					  <th>Role</th>
                     </tr>
                     <tr>"; 
 					
-					$peopleinfo="SELECT firstName, lastName, email, phoneNumber, PrivilegeID 
+					$peopleinfo="SELECT firstName, lastName, email, phoneNumber, PrivilegeID, employee.employeeID
 					FROM employee, employeeprivlege, email, phone 
 					where employee.EmployeeID=email.EmployeeID 
 					and email.Type='Work' 
@@ -243,13 +293,33 @@ echo"
 					
 					while($row=$result->fetch_assoc())
 					{
+						$schedule="SELECT DayID, StartTime, EndTime, employeeID FROM ahours WHERE EmployeeID=".$row['employeeID']." order by case when DayID='Sun' then 1 when DayID='Mon' then 2 when DayID='Tue' then 3 when DayID='Wed' then 4 when DayID='Thr' then 5 when DayID='Fri' then 6 when DayID='Sat' then 7 else 8 end asc";
+						$quick=mysqli_query($link,$schedule);
+						
 echo"					
 						<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $row['email'] . "'> <button class='btn btn-primary' type='submit'>Edit</button></form></td>
                         <td>" . $row['firstName'] . "</td>
                         <td>" . $row['lastName'] . "</td>
                         <td>" . $row['email'] . "</td>
-                        <td>" . $row['phoneNumber'] . "</td>
-                        <td>Schedule Info Here</td>  <!-- this is where the schedule will be placed -->
+                        <td>" . $row['phoneNumber'] . "</td>";
+						while($fullschd=$quick->fetch_assoc())
+						{
+							if($fullschd['DayID']=='Sun')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Mon')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Tue')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Wed')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Thr')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Fri')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Sat')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+						}
+echo"
 						<td>" . $row['PrivilegeID'] . "</td>
                       </tr>
 					  ";
@@ -260,6 +330,8 @@ echo"
 					
 				  
                   </table>
+				  <br>
+				  <br>
             </div>
             <div class="col-md-1"> </div>
         </div>  
