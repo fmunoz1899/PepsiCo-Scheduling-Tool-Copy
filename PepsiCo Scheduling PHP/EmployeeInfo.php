@@ -50,6 +50,24 @@
 			
 			$_SESSION['last']=$time;*/
 			
+			if(isset($_POST['transfer1']) && isset($_POST['transferID']))
+			{
+				$ID=filter_var($_POST['transfer1'], FILTER_SANITIZE_EMAIL); //email
+				$ID2=filter_var($_POST['transferID'], FILTER_SANITIZE_NUMBER_INT); //empID
+				$remove=$link->prepare("DELETE from email where email.email=? and email.employeeID=?");
+				$remove->bind_param("si",$ID,$ID2);
+				$remove->execute();
+			}
+			
+			if(isset($_POST['transfer2']) && isset($_POST['transferID']))
+			{
+				$ID=filter_var($_POST['transfer2'], FILTER_SANITIZE_NUMBER_INT); //phone number //not excatly sure off top of head if correct sanitize for phone number 
+				$ID2=filter_var($_POST['transferID'], FILTER_SANITIZE_NUMBER_INT);//empID
+				$remove=$link->prepare("DELETE from phone where phone.phoneNumber=? and phone.employeeID=?");
+				$remove->bind_param("si",$ID,$ID2);
+				$remove->execute();
+			}
+			
 			if(isset($_POST['transfer']))
 			{
 				$ID=filter_var($_POST['transfer'], FILTER_SANITIZE_EMAIL);
@@ -63,6 +81,7 @@
 				<h1 class='h1_1'>" . $row['firstName'] . " " . $row['lastName'] . "</h1>
 ";			}
 
+
 			else
 			{
 				header("location:login.php?empinfo_no_transfer");
@@ -74,6 +93,13 @@
 				$clean=filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL);
 echo"			<input type='hidden' value='".$clean."' name='transfer'> ";?>
 				<button class='btn btn-primary' type='submit'>Change Password</button>
+				</form> 
+				<br>
+				<form method="POST" action="AdminLanding.php">
+				<?php
+				$clean=filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL);
+echo"			<input type='hidden' value='".$clean."' name='transfer'> ";?>
+				<button class='btn btn-primary' type='submit'>Remove Employee</button>
 				</form> 
           </div>
                
@@ -270,13 +296,14 @@ include('connect.php');
 <?php
 include('connect.php');
  
-		$ID=filter_var($_POST['transfer'], FILTER_SANITIZE_EMAIL);
+		$ID=filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL);
+		
 
-		$soloemail=$link->prepare("SELECT email, type FROM Email WHERE email.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?)");
+		$soloemail=$link->prepare("SELECT email, type, employeeID FROM Email WHERE email.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?) ORDER BY type DESC");
 		$soloemail->bind_param("s",$ID);
 		
 		
-		$solonum=$link->prepare("SELECT phoneNumber, type FROM phone WHERE phone.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?)");
+		$solonum=$link->prepare("SELECT phoneNumber, type, employeeID FROM phone WHERE phone.EmployeeID=(SELECT EmployeeID FROM Email WHERE Email.Email=?) ORDER BY type DESC");
 		$solonum->bind_param("s",$ID);
 	
 			
@@ -284,18 +311,32 @@ include('connect.php');
 		$finalem=$soloemail->get_result();
 		
 
+//make edit pop up a modal with the info inserted already
 echo"
         <div class='row tbl_space'> 
             <div class='col-md-2'> </div>
             <div class = 'col-md-4'>
                 <table>
                     <tr>
+					  <th>Edit</th>
+					  <th>Delete</th>
                       <th>Emails</th>
 					  <th>Type</th>
                     </tr>";
 					
 					while($emrow=$finalem->fetch_assoc())
 					{
+					   if($emrow['type']!='Work')
+					   {
+					      echo"<td>edit</td>";
+					      echo"<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $ID . "'> <input name='transfer1' type='hidden' value='" . $emrow['email'] . "'> <input name='transferID' type='hidden' value='" . $emrow['employeeID'] . "'> <button class='btn btn-primary' type='submit'>Remove</button></form></td>";
+					   }
+					
+					   else
+					   {
+					      echo"<td></td>";
+					      echo"<td></td>";
+					   }
 echo"                  <td>" . $emrow['email'] . "</td>
 				       <td>" . $emrow['type'] . "</td></tr>";
 					}
@@ -304,18 +345,31 @@ echo"				</table></div>";
 					$solonum->execute();
 					$finalnum=$solonum->get_result();
 	
+	
 echo"
 			<div class='col-md-4'>
 				<table>
 					<tr>
+					    <th>Edit</th>
+						<th>Delete</th>
 						<th>Phone Numbers</th>
 						<th>Type</th>
 					</tr>";
 					
 					while($numrow=$finalnum->fetch_assoc())
 					{
-echo"                 <td>" . $numrow['phoneNumber'] . "</td>
-    				  <td>" . $numrow['type'] . "</td></tr>";
+					if($numrow['type']!='Work')
+					{
+					   echo"<td>edit</td>";
+					   echo"<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $ID . "'> <input name='transfer2' type='hidden' value='" . $numrow['phoneNumber'] . "'> <input name='transferID' type='hidden' value='" . $numrow['employeeID'] . "'> <button class='btn btn-primary' type='submit'>Remove</button></form></td>";					}
+					
+					else
+					{
+					   echo" <td></td>";
+					   echo"<td></td>";
+					}
+echo"                  <td>" . $numrow['phoneNumber'] . "</td>
+						<td>" . $numrow['type'] . "</td></tr>";
 					}
 echo"				</div>";
 					
