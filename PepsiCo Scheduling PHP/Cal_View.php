@@ -171,6 +171,7 @@ echo"
 		include('connect.php');
 		$Emps="SELECT EmployeeID, FirstName, LastName FROM pepsi_database.employee";
 		$Eresult=$link->query($Emps);
+		
 		while($row=$Eresult->fetch_assoc()){
 echo'			<div class="item">
             <table class = "cal_tbl_bg">
@@ -179,10 +180,12 @@ echo'			<div class="item">
 		echo $row["FirstName"]. " " . $row["LastName"];
 		'<b></b></th>';
 			$eid=$row["EmployeeID"];
-			$WI="SELECT StartTime, workItem.ItemID, Description
-				FROM workitem, employee, wi_schedule
+			$WI="SELECT StartTime, workItem.ItemID, Description, LocationName
+				FROM workitem, employee, wi_schedule, location
 				where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID
+                and workitem.LocationID=location.LocationID
 				and employee.EmployeeID=$eid;";
+
 			$Wresult=$link->query($WI);
 			while($Wrow=$Wresult->fetch_assoc()){
 //Insert Into Table
@@ -191,7 +194,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "08:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -203,7 +206,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "08:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -215,7 +218,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "09:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -227,7 +230,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "09:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -239,7 +242,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "10:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -251,7 +254,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "10:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -263,7 +266,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "11:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -275,7 +278,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "11:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -287,7 +290,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "12:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -299,7 +302,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "12:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -311,7 +314,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "13:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -323,7 +326,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "13:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -335,7 +338,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "14:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -347,7 +350,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "14:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -359,7 +362,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "15:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -371,7 +374,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "15:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -383,7 +386,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "16:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -395,7 +398,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "16:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -407,7 +410,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "17:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -419,7 +422,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "17:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -431,7 +434,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "18:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -443,7 +446,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "18:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -455,7 +458,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "19:00:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
@@ -467,7 +470,7 @@ echo'			<tr class = "row_height">
 				$time = $Wrow["StartTime"];
 				if($time == "19:30:00"){
 					echo'<td>';
-					echo "Item ID ". $Wrow["ItemID"]. "<br>". $Wrow["Description"];
+					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
 					echo'</td>';
 				}
 				else{
