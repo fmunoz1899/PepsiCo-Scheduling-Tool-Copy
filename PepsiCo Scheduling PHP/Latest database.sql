@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 29, 2021 at 03:53 AM
+-- Generation Time: Apr 11, 2021 at 05:52 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -31,9 +31,9 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `ahours`;
 CREATE TABLE IF NOT EXISTS `ahours` (
   `EmployeeID` bigint(20) NOT NULL,
-  `DayID` varchar(2) NOT NULL,
-  `StartTime` time NOT NULL,
-  `EndTime` time NOT NULL,
+  `DayID` varchar(3) NOT NULL,
+  `StartTime` time DEFAULT NULL,
+  `EndTime` time DEFAULT NULL,
   PRIMARY KEY (`EmployeeID`,`DayID`),
   KEY `EmployeeID` (`EmployeeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -43,12 +43,41 @@ CREATE TABLE IF NOT EXISTS `ahours` (
 --
 
 INSERT INTO `ahours` (`EmployeeID`, `DayID`, `StartTime`, `EndTime`) VALUES
-(1, 'M', '08:00:00', '14:00:00'),
-(1, 'Th', '08:00:00', '10:00:00'),
-(2, 'W', '08:00:00', '16:00:00'),
-(3, 'F', '10:00:00', '20:00:00'),
-(4, 'T', '12:00:00', '20:00:00'),
-(4, 'W', '08:00:00', '16:00:00');
+(1, 'Fri', NULL, NULL),
+(1, 'Mon', NULL, NULL),
+(1, 'Sat', NULL, NULL),
+(1, 'Sun', '08:00:00', '14:00:00'),
+(1, 'Thr', '08:00:00', '10:00:00'),
+(1, 'Tue', NULL, NULL),
+(1, 'Wed', NULL, NULL),
+(2, 'Fri', NULL, NULL),
+(2, 'Mon', NULL, NULL),
+(2, 'Sat', NULL, NULL),
+(2, 'Sun', NULL, NULL),
+(2, 'Thr', NULL, NULL),
+(2, 'Tue', NULL, NULL),
+(2, 'Wed', '08:00:00', '16:00:00'),
+(3, 'Fri', '10:00:00', '20:00:00'),
+(3, 'Mon', NULL, NULL),
+(3, 'Sat', NULL, NULL),
+(3, 'Sun', NULL, NULL),
+(3, 'Thr', NULL, NULL),
+(3, 'Tue', NULL, NULL),
+(3, 'Wed', NULL, NULL),
+(4, 'Fri', NULL, NULL),
+(4, 'Mon', NULL, NULL),
+(4, 'Sat', NULL, NULL),
+(4, 'Sun', NULL, NULL),
+(4, 'Thr', NULL, NULL),
+(4, 'Tue', '12:00:00', '20:00:00'),
+(4, 'Wed', '08:00:00', '16:00:00'),
+(32, 'Fri', NULL, NULL),
+(32, 'Mon', '08:30:00', '20:30:00'),
+(32, 'Sat', NULL, NULL),
+(32, 'Sun', NULL, NULL),
+(32, 'Thr', NULL, NULL),
+(32, 'Tue', NULL, NULL),
+(32, 'Wed', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -119,10 +148,11 @@ CREATE TABLE IF NOT EXISTS `email` (
 --
 
 INSERT INTO `email` (`Email`, `EmployeeID`, `Type`) VALUES
-('duck1@goose.com', 41, 'Work'),
-('duck@goose.com', 40, 'Work'),
+('d@r5', 4, 'Personal'),
+('f@ggrr', 1, 'Personal'),
 ('felixXXX@ioan.edu', 4, 'Work'),
-('fmunoz1@gmail.com', 1, 'Personal'),
+('fmuno1899@gmail.com', 1, 'Personal'),
+('frankthetank@aol.com', 32, 'Work'),
 ('itsmekevin@hotmail.com', 3, 'Work'),
 ('julianquack@yahoo.com', 2, 'Work'),
 ('r', 1, 'Work');
@@ -140,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `employee` (
   `lastName` varchar(20) NOT NULL,
   `Epassword` varchar(50) NOT NULL,
   PRIMARY KEY (`EmployeeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employee`
@@ -173,12 +203,10 @@ CREATE TABLE IF NOT EXISTS `employeeprivlege` (
 
 INSERT INTO `employeeprivlege` (`EmployeeID`, `PrivilegeID`) VALUES
 (1, 'A'),
-(32, 'A'),
-(41, 'A'),
 (2, 'E'),
 (4, 'E'),
-(3, 'M'),
-(40, 'M');
+(32, 'E'),
+(3, 'M');
 
 -- --------------------------------------------------------
 
@@ -195,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `location` (
   `State` varchar(20) NOT NULL,
   `Zip` int(5) NOT NULL,
   PRIMARY KEY (`LocationID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `location`
@@ -205,7 +233,8 @@ INSERT INTO `location` (`LocationID`, `LocationName`, `StreetAdress`, `City`, `S
 (1, 'warehouse', '715 North Ave', 'Houston', 'TX', 11111),
 (2, 'my house', '515 tenicey ave', 'city in TN', 'TN', 69696),
 (3, 'ivanov backyard', '169 ivanov road', 'jersey place', 'NJ', 12345),
-(4, 'place', '23 road', 'city city', 'OH', 39671);
+(4, 'place', '23 road', 'city city', 'OH', 39671),
+(5, 'Iona', '715 North Ave', 'New Rochelle', 'NY', 10801);
 
 -- --------------------------------------------------------
 
@@ -227,12 +256,12 @@ CREATE TABLE IF NOT EXISTS `phone` (
 --
 
 INSERT INTO `phone` (`PhoneNumber`, `EmployeeID`, `Type`) VALUES
-('3477173002', 41, 'Work'),
+('3470003005', 32, 'Work'),
 ('3477173005', 1, 'Work'),
 ('5527938400', 2, 'Work'),
 ('6467965987', 1, 'Home'),
+('6467965987', 4, 'Personal'),
 ('6477758312', 4, 'Work'),
-('6942042069', 40, 'Work'),
 ('911', 2, 'Home'),
 ('9354637584', 3, 'Work');
 
@@ -306,7 +335,7 @@ CREATE TABLE IF NOT EXISTS `workitem` (
   KEY `EWID_idx` (`EmployeeID`),
   KEY `LID_idx` (`LocationID`),
   KEY `DID_idx` (`DeliveryID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `workitem`
@@ -316,7 +345,8 @@ INSERT INTO `workitem` (`ItemID`, `EmployeeID`, `LocationID`, `DeliveryID`, `Des
 (1, 1, 1, 1, 'stuff', 0, 2, 3),
 (2, 3, 2, 3, NULL, 0, NULL, NULL),
 (3, 4, 3, 4, 'things and stuff', 0, 2, NULL),
-(4, 2, 4, 3, 'even more ~stuff~', 0, NULL, NULL);
+(4, 2, 4, 3, 'even more ~stuff~', 0, NULL, NULL),
+(5, 32, 1, 4, NULL, 0, NULL, NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
