@@ -1,6 +1,10 @@
 4/11
 ahours: DayID has changed to accept a max of 3 chars
-ahours: the start and end times can now be null (every employee made will get 7 days all of which will be null)
+ahours: the start and end times can now be null (every employee made will get 7 days all of which will be set to null)
 phone: both the phoneNumber and employeeID as primary keys
 email: both the email and employeeID as primary keys
 location: state changed to accept a max of 2 chars
+
+4/12
+privilege: that whole table has been dropped
+wi_schedule: EndDate became Date and cannot be null
