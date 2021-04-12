@@ -22,12 +22,13 @@
         <nav class="navbar navbar-expand-sm fixed-top nav">
            <ul class="navbar-nav">	
                 <li class="nav-item active"><a class="nav-link a2" href="AdminLanding.php">Employees</a></li>
+				<li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
             </ul>
       </nav>
 
 
             <div class="jumbotron text-center jumbotron2">
-                <h1 class="font-weight-bold text-center">Employees</h1>
+                <h1 class="font-weight-bold text-center">Admin Employees</h1>
                 <img class = "img1"  src = "pepsi.png"> 
                 <hr class = "hr1">
             </div>
@@ -100,7 +101,13 @@
 			
 			if($rowcount==0)
 			{
-				$remove=$link->prepare("DELETE email, employee, phone, employeeprivlege, ahours FROM email INNER JOIN employee on  employee.EmployeeID=email.EmployeeID INNER JOIN phone on phone.EmployeeID=employee.EmployeeID INNER JOIN employeeprivlege on employeeprivlege.EmployeeID=employee.EmployeeID INNER JOIN ahours on ahours.employeeID=employeeprivlege.employeeID WHERE email.EmployeeID=?");
+				$remove=$link->prepare("DELETE email, employee, phone, employeeprivlege, ahours 
+										FROM email 
+										INNER JOIN employee on employee.EmployeeID=email.EmployeeID 
+										INNER JOIN phone on phone.EmployeeID=employee.EmployeeID 
+										INNER JOIN employeeprivlege on employeeprivlege.EmployeeID=employee.EmployeeID 
+										INNER JOIN ahours on ahours.employeeID=employeeprivlege.employeeID 
+										WHERE email.EmployeeID=?");
 				$remove->bind_param("i",$row['employeeID']);
 				$remove->execute();
 				echo"<script>alert('" . $row['firstName'] . " " . $row['lastName'] . " was removed!')</script>";
@@ -177,7 +184,7 @@
 					mysqli_real_query($link,$hours);
 					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Wed', default, default)";
 					mysqli_real_query($link,$hours);
-					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Thr', default, default)";
+					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Thu', default, default)";
 					mysqli_real_query($link,$hours);
 					$hours="INSERT into ahours values(" . $row['Max(EmployeeID)'] . ", 'Fri', default, default)";
 					mysqli_real_query($link,$hours);
@@ -240,7 +247,6 @@
                     <select class = "checkSpace" name = "role">
                         <option value = "E"> Engineer </option> 
                         <option value = "M"> Manager </option> 
-                        <option value = "M"> Manager </option> 
                         <option value = "A"> Admin </option> 
                     </select>
                 </div>       
@@ -293,7 +299,16 @@ echo"
 					
 					while($row=$result->fetch_assoc())
 					{
-						$schedule="SELECT DayID, StartTime, EndTime, employeeID FROM ahours WHERE EmployeeID=".$row['employeeID']." order by case when DayID='Sun' then 1 when DayID='Mon' then 2 when DayID='Tue' then 3 when DayID='Wed' then 4 when DayID='Thr' then 5 when DayID='Fri' then 6 when DayID='Sat' then 7 else 8 end asc";
+						$schedule="SELECT DayID, TIME_FORMAT(StartTime, '%l:%i%p') AS StartTime, TIME_FORMAT(EndTime, '%l:%i%p') AS EndTime, employeeID 
+						FROM ahours WHERE EmployeeID=".$row['employeeID']." order by case 
+						when DayID='Sun' then 1 
+						when DayID='Mon' then 2 
+						when DayID='Tue' then 3 
+						when DayID='Wed' then 4 
+						when DayID='Thu' then 5 
+						when DayID='Fri' then 6 
+						when DayID='Sat' then 7 
+						else 8 end asc";
 						$quick=mysqli_query($link,$schedule);
 						
 echo"					
@@ -312,7 +327,7 @@ echo"
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
 							if($fullschd['DayID']=='Wed')
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
-							if($fullschd['DayID']=='Thr')
+							if($fullschd['DayID']=='Thu')
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
 							if($fullschd['DayID']=='Fri')
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
