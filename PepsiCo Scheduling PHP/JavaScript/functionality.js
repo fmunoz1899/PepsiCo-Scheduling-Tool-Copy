@@ -28,5 +28,11 @@ $(document).ready(
         $(document).ready(function() {
             $('#items').hScroll(60); 
         });
-               
+        $(document).ready(function() {
+            $('#datepicker').datepicker();
+            $('#datepicker').datepicker('setDate', 'today');
+           
+        });
+  
     });
+ 
