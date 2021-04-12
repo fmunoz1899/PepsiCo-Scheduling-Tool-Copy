@@ -21,15 +21,16 @@
     <body>
       <nav class="navbar navbar-expand-sm fixed-top nav">
         <ul class="navbar-nav">	
-          <li class="nav-item active"><a class="nav-link" href="List_View.html">Schedule</a></li>
-          <li class="nav-item active"><a class="nav-link a2" href="employees.html">Employees</a></li>
-          <li class="nav-item active"><a class="nav-link a2" href="locations.html">Locations</a></li>
+          <li class="nav-item active"><a class="nav-link" href="List_View.php">Schedule</a></li>
+          <li class="nav-item active"><a class="nav-link a2" href="employees.php">Employees</a></li>
+          <li class="nav-item active"><a class="nav-link a2" href="locations.php">Locations</a></li>
+		  <li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
 
     </nav>
 
 
             <div class="jumbotron text-center jumbotron2">
-                <h1 class="font-weight-bold text-center">Workorder List View</h1>
+                <h1 class="font-weight-bold text-center">Manager Workorder List View</h1>
                 <img class = "img1"  src = "pepsi.png"> 
                 <hr class = "hr1">
             </div>
@@ -38,26 +39,25 @@
                 <h1 class="h1_1">Displaying all Scheduled Workorders</h1>
             </div>
             
-<?php 
-	include('connect.php');
-	$names="SELECT firstName, lastName FROM employee";
-	$result=$link->query($names);
-echo" 
             <!-- All names will be taken from the database -->
-            <div class='row div_space'> 
-                <div class='col-md-1'> </div>
-                <div class='col-md-4'> 
-                    <label>Select employee to filter results:</label>
-                    <select name='employees' id='emps'>
-						<option>Select One</option>";
-                        while($row=$result->fetch_assoc()) 
-							echo"<option value=" . $row["firstName"] . " " . $row["lastName"] . ">" . $row["firstName"] . " " . $row["lastName"] . "</option>";
-echo"
-                    </select>
+            <div class="row div_space"> 
+                <div class="col-md-1"> </div>
+                <div class="col-md-4"> 
+                <label>Select employee to filter results:</label>
+                <select name="employees" id="emps">
+                    <option value="John Doe">John Doe</option>
+                    <option value="John Smith">John Smith</option>
+                    <option value="Robert Johnson">Robert Johnson</option>
+                  </select>
                 </div>
-	";
-	mysqli_close($link);
- ?>  
+                <div class="col-md-3"></div>
+                  <div class="col-md-3 divborder">
+                      <form class = "select_form">
+                          <input class = "choice" type="radio" name="choice" id = "LV"> List View 
+                          <input class = "choice" type="radio" name="choice" id = "CV" checked> Calendar View
+                      </form>
+                  </div>
+              </div>
           <div class="row "> 
             <div class="col-md-9"> </div>
               <div class="col-md-3">
@@ -163,328 +163,95 @@ echo"
 
       <!------------------------------------->
 
-      <div class = "row div_space "> 
-        <div class = "col-md-1"></div>
-        <div class = "col-md-10  cal_bg">
-        <div id="items">
-		<?php
-		include('connect.php');
-		$Emps="SELECT EmployeeID, FirstName, LastName FROM pepsi_database.employee";
-		$Eresult=$link->query($Emps);
+       <!--------------- Modal Code -------------->
+       <div class="modal fade" id="newBO" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Schedule New Blockout</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action = "cal_view.php" method = "POST">
+              <div class="form-group">
+                  <label>Start Time</label>
+                  <input type="Time" class="form-control" name="sTime" required>
+              </div>
+                       
+              <div class="form-group">
+                <label>End Time</label>
+                <input type="Time" class="form-control" name="eTime" required>
+            </div>  
+            <div class="form-group">
+                <label>Reason</label>
+                <input type="text" name="Description">
+            </div>
+                <button type="submit" name="submit" class="btn btn-primary">Blockout</button> 
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!------------------------------------->
+
+<?php
+include('connect.php');
+date_default_timezone_set("America/New_York");
+echo"
+      <div class = 'row div_space '> 
+        <div class = 'col-md-1'></div>
+        <div class = 'col-md-10  cal_bg'>
+        <div id='items'>";
 		
-		while($row=$Eresult->fetch_assoc()){
-echo'			<div class="item">
-            <table class = "cal_tbl_bg">
+		$curday=substr(date("r"),0,3); //this gets me the day abbrivated for the blockout
+		$empID="SELECT employeeID from employee";
+		//SELECT firstName, lastName, employee.employeeID, DayID, StartTime, EndTime FROM employee, ahours WHERE employee.employeeID=ahours.employeeID and StartTime=EndTime and StartTime!='NULL' and employee.employeeID=ahours.employeeID and DayID='".$curday."'
+		// used to show schedule of those working today	
+				
+		$result=mysqli_query($link,$empID);
+		
+		while($rowID=$result->fetch_assoc())
+		{
+			$count=0;
+			$time=date('08:00:00'); //starting time of the day
+			
+			$sched="SELECT firstName, lastName, employee.employeeID, DayID, StartTime, EndTime
+					FROM employee, ahours
+					WHERE employee.employeeID=".$rowID['employeeID']." and employee.employeeID=ahours.employeeID and DayID='".$curday."'";
+					
+			$full=mysqli_query($link,$sched);
+			$rowsch=$full->fetch_assoc();
+echo"
+          <div class='item'>
+            <table class = 'cal_tbl_bg'>
               <tr>
-		<th colspan="2">';
-		echo $row["FirstName"]. " " . $row["LastName"];
-		'<b></b></th>';
-			$eid=$row["EmployeeID"];
-			$WI="SELECT StartTime, workItem.ItemID, Description, LocationName
-				FROM workitem, employee, wi_schedule, location
-				where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID
-                and workitem.LocationID=location.LocationID
-				and employee.EmployeeID=$eid;";
+                <th><button type='button' data-toggle='modal' data-target='#newBO'>Blockout</button></th>
+                <th colspan='2'><b>".$rowsch['firstName']." ".$rowsch['lastName']."</b></th>";
+				while($time!='22:30:00') //time day ends plus the time increment
+				{
+ echo"	            <tr class = 'row_height'>";
+					echo"<td class = 'hour'>".date('g:ia',strtotime($time))."</td> 
+					<td>	</td>
+					</tr>";
+					$time = date('H:i:s',strtotime('+30 minutes',strtotime($time))); //to increment the schdule by 30 minutes
+				}
+ echo"            
+            </table>
+			</div>
+		";}
+ ?>
 
-			$Wresult=$link->query($WI);
-			while($Wrow=$Wresult->fetch_assoc()){
-//Insert Into Table
-echo'			<tr class = "row_height">
-                <td class = "hour">8:00am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "08:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">8:30am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "08:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">9:00am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "09:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">9:30am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "09:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">10:00am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "10:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">10:30am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "10:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">11:00am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "11:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">11:30am</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "11:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">12:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "12:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">12:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "12:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">1:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "13:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">1:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "13:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">2:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "14:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">2:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "14:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">3:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "15:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">3:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "15:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">4:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "16:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">4:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "16:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">5:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "17:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">5:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "17:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">6:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "18:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">6:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "18:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">7:00pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "19:00:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}
-echo'			<tr class = "row_height">
-                <td class = "hour">7:30pm</td>';
-				$time = $Wrow["StartTime"];
-				if($time == "19:30:00"){
-					echo'<td>';
-					echo "Item ID: ". $Wrow["ItemID"]. "<br>Location: ".$Wrow["LocationName"]. "<br> Description: ". $Wrow["Description"];
-					echo'</td>';
-				}
-				else{
-					echo'<td>
-					</td>';
-				}						
-
-			}
-		}
-
-		mysqli_close($link);
-		?>
- 
-
+            </table>
+        </div>
+       </div>
+	  </div>
         
 
             
