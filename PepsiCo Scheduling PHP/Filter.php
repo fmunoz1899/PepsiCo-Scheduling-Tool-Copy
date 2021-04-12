@@ -22,12 +22,13 @@
         <nav class="navbar navbar-expand-sm fixed-top nav">
            <ul class="navbar-nav">	
                 <li class="nav-item active"><a class="nav-link a2" href="AdminLanding.php">Employees</a></li>
+				<li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
             </ul>
       </nav>
 
 
             <div class="jumbotron text-center jumbotron2">
-                <h1 class="font-weight-bold text-center">Filtered Employees</h1>
+                <h1 class="font-weight-bold text-center">Admin Filtered Employees</h1>
                 <img class = "img1"  src = "pepsi.png"> 
                 <hr class = "hr1">
             </div>
