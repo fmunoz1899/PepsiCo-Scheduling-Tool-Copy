@@ -64,6 +64,11 @@ form
     width:  100%;
 
 }
+.form2
+{
+    margin-left: 20px;
+    display:inline;
+}
 .img1
 {
     height: 100px;
@@ -171,6 +176,46 @@ th
 {
     background-color:#E7F2F6; ;
 }
+.sched_work
+{
+    background-color:rgb(76, 152, 233);
+    border:none;
+    border-right: solid black 1px;
+    
+}
+.sched_work_15_min
+{
+    background-color:rgb(76, 152, 233);
+
+}
+
+
+.blockout
+{
+    background-color:rgb(96, 112, 133);
+    border:none;
+    border-right: solid black 1px;
+}
+.blockout_15_min
+{
+    background-color:rgb(96, 112, 133);
+
+}
+
+
+.no_work
+{
+    background-color:dimgrey;
+    border:none;
+    border-right: solid black 1px;
+}
+.no_work_15_min
+{
+    background-color:dimgrey;
+
+}
+
+
 /*---------------------------------------------------------------------*/
 /*-----------any new css you write between these please---------------*/
 
