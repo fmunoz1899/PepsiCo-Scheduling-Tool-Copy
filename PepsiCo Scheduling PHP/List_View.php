@@ -23,13 +23,13 @@
           <ul class="navbar-nav">	
             <li class="nav-item active"><a class="nav-link" href="List_View.php">Schedule</a></li>
             <li class="nav-item active"><a class="nav-link a2" href="employees.php">Employees</a></li>
-            <li class="nav-item active"><a class="nav-link a2" href="location.php">Locations</a></li>
-
+            <li class="nav-item active"><a class="nav-link a2" href="locations.php">Locations</a></li>
+			<li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
       </nav>
 
 
             <div class="jumbotron text-center jumbotron2">
-                <h1 class="font-weight-bold text-center">Workorder List View</h1>
+                <h1 class="font-weight-bold text-center">Manager Workorder List View</h1>
                 <img class = "img1"  src = "pepsi.png"> 
                 <hr class = "hr1">
             </div>
@@ -58,6 +58,7 @@ echo"
 	";
 	mysqli_close($link);
  ?>  
+
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
                       <form class = "select_form">
@@ -76,11 +77,108 @@ echo"
       </div>
 </div>
       <!--------------- Modal Code -------------->
-	  
+	   <div class="modal fade" id="newWO" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Schedule New Workorder</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body modalContent">
+              <form action = "List_View.html" method = "POST" >
+                <p>Employee: 
+                  <select name="employee" required>
+                    <option value="" disabled selected>Select One</option>
+                    <option value="m">Main Employee</option>
+                    <option value="s">Second Employee</option>
+                    <option value="t">Third Employee</option>
+                  </select>
+                </p>
+                <p>Date: 
+                  <select name="date">
+                    <option value="" disabled selected>Select Date</option>
+                    <option>Day 1</option>
+                    <option>Day 2</option>
+                    <option>Day 3</option>
+                  </select>
+                </p>
+                <p>Start Time: 
+                  <select name="startTime">
+                    <option value="" disabled selected>Select One</option>
+                    <option>9:00</option>
+                    <option>9:15</option>
+                    <option>9:30</option>
+                  </select>
+                </p>
+                <p>Job Length: 
+                  <select name="jobLenght">
+                    <option value="" disabled selected>Select One</option>
+                    <option>15 minutes</option>
+                    <option>30 minutes</option>
+                    <option>45 minutes</option>
+                  </select>
+                </p>
+                <p>Location: 
+                  <select name="SelectLocation">
+                    <option value="" desabled selected>Select One</option>
+                    <option>Location 1</option>
+                    <option>Location 2</option>
+                    <option>Location 3</option>
+                  </select>
+                </p>
+                <p>Delivery method: 
+                  <select name="SelectDelivery">
+                    <option value="" desabled selected>Select One</option>
+                    <option>Delivery 1</option>
+                    <option>Delivery 2</option>
+                    <option>Delivery 3</option>
+                  </select>
+                </p>
+                <p>Description:
+                  <input type="text" name="Description">
+                </p>
+                <p>Main Employee: 
+                  <select name="EmpMain">
+                    <option value="" desabled selected>Select One</option>
+                    <option>Employee 1</option>
+                    <option>Employee 2</option>
+                    <option>Employee 3</option>
+                  </select>
+                </p>
+                <p>Second Employee: 
+                  <select name="EmpSec">
+                    <option value="" desabled selected>Select One</option>
+                    <option>Employee 1</option>
+                    <option>Employee 2</option>
+                    <option>Employee 3</option>
+                  </select>
+                </p>
+                <p>Third Employee: 
+                  <select name="EmpThird">
+                    <option value="" desabled selected>Select One</option>
+                    <option>Employee 1</option>
+                    <option>Employee 2</option>
+                    <option>Employee 3</option>
+                  </select>
+                  
+                <button type="submit" name="submit" class="btn btn-primary subBut">Schedule</button> 
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!------------------------------------->
 <?php
 //Dont know how you want this, if you only want work items that are fully scheduled or not
 	include('connect.php');
-	$sqlWI="SELECT firstName, lastName, workitem.ItemID, LocationName, Method, TotalWorkTime, StartTime, EndTime, EndDate
+	$sqlWI="SELECT firstName, lastName, workitem.ItemID, LocationName, Method, TotalWorkTime, StartTime, EndTime, Date
 			FROM workitem,employee,delivery,wi_schedule,location
 			where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID and
 			workitem.LocationID=location.LocationID and workitem.DeliveryID=delivery.DeliveryID;";
@@ -109,7 +207,7 @@ echo"
 					<td>" . $row["TotalWorkTime"]."</td>
 					<td>" . $row["StartTime"]."</td>
 					<td>" . $row["EndTime"]."</td>
-					<td>" . $row["EndDate"]."</td>
+					<td>" . $row["Date"]."</td>
 				</tr>";
 			}
 	echo'</div>';
