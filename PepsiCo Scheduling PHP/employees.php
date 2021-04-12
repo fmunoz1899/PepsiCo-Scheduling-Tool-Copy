@@ -118,7 +118,7 @@ echo"
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
 							if($fullschd['DayID']=='Wed')
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
-							if($fullschd['DayID']=='Thr')
+							if($fullschd['DayID']=='Thu')
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
 							if($fullschd['DayID']=='Fri')
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
