@@ -6,9 +6,14 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'rel='stylesheet'>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js?ver=1.3.2'></script>
+        <script type='text/javascript' src='/js/jquery.mousewheel.min.js'></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
         <script language='Javascript' type='text/javascript' src='JavaScript/functionality.js'></script> 
         <script>
@@ -42,13 +47,16 @@
             <div class="row div_space"> 
                 <div class="col-md-1"> </div>
                 <div class="col-md-4"> 
-                <label>Select employee to filter results:</label>
-                <select name="employees" id="emps">
-                    <option value="John Doe">John Doe</option>
-                    <option value="Jane Doe">Jane Doe</option>
-                    <option value="John Smith">John Smith</option>
-                    <option value="Robert Johnson">Robert Johnson</option>
-                  </select>
+                  <form class = "form2">
+                    <label>Search for an Employee:</label>
+                    <input type="text" name="filterfirst" placeholder="First Name"> <!-- might need to change so it can filter by first and last name separately-->
+                    
+                    <input type="text" name="filterlast" placeholder="Last Name"><br>
+                    <label>Select Date:</label> 
+                      <input type="text" id="datepicker">
+                      <button type="submit" name="submit" class="btn btn-primary">Filter</button>
+                  </form > 
+                
                 </div>
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
@@ -58,8 +66,14 @@
                       </form>
                   </div>
               </div>
-          <div class="row "> 
-            <div class="col-md-9"> </div>
+              <br>
+          <div class="row ">
+            <div class = "col-md-1"></div>
+            <div class="col-md-3">
+              
+          </div> 
+            
+            <div class="col-md-5"> </div>
               <div class="col-md-3">
                 <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newWO"> Create New Workorder</button>
               </div>
@@ -210,48 +224,48 @@
               <tr>
                 <th><button type="button" data-toggle="modal" data-target="#newBO"> Blockout</button></th>
                 <th colspan="2"><b>John Smith</b></th>
-              <tr class = "row_height">
+              <tr class = "row_height ">
                 <td class = "hour">8:00</td>
-                <td>    </td>
+                <td  class = "no_work_15_min">    </td>
               </tr>
               <tr class = "row_height">
                 <td>8:30</td>
-                <td>    </td>
+                <td class="sched_work">    </td>
               </tr>
-              <tr class = "row_height"> 
-                <td>9:00</td>
-                <td>    </td>
+              <tr class = "row_height "> 
+                <td >9:00</td>
+                <td class="sched_work">   </td>
               </tr>
-              <tr class = "row_height">
-                <td>9:30</td>
-                <td>    </td>
+              <tr class = "row_height ">
+                <td >9:30</td>
+                <td class="sched_work">  </td>
               </tr>
-              <tr class = "row_height">
+              <tr class = "row_height ">
                 <td>10:00</td>
                 <td>    </td>
               </tr>
-              <tr class = "row_height">
+              <tr class = "row_height ">
                 <td>10:30</td>
                 <td>    </td>
               </tr>
               <tr class = "row_height">
-                <td>11:00</td>
-                <td>    </td>
+                <td >11:00</td>
+                <td class = "blockout">    </td>
               </tr>
               <tr class = "row_height">
-                <td>12:00</td>
-                <td>    </td>
+                <td >12:00</td>
+                <td class = "blockout">    </td>
               </tr>
               <tr class = "row_height">
-                <td>1:00</td>
-                <td>    </td>
+                <td >1:00</td>
+                <td class = "blockout">    </td>
               </tr>
-              <tr class = "row_height">
+              <tr class = "row_height ">
                 
                 <td>1:30</td>
-                <td>    </td>
+                <td class = "blockout">    </td>
               </tr>
-              <tr class = "row_height">
+              <tr class = "row_height ">
                
                 <td>2:00</td>
                 <td>    </td>
