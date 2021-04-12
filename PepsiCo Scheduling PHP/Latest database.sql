@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 11, 2021 at 05:52 AM
+-- Generation Time: Apr 12, 2021 at 07:11 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -47,37 +47,44 @@ INSERT INTO `ahours` (`EmployeeID`, `DayID`, `StartTime`, `EndTime`) VALUES
 (1, 'Mon', NULL, NULL),
 (1, 'Sat', NULL, NULL),
 (1, 'Sun', '08:00:00', '14:00:00'),
-(1, 'Thr', '08:00:00', '10:00:00'),
+(1, 'Thu', '08:00:00', '10:00:00'),
 (1, 'Tue', NULL, NULL),
 (1, 'Wed', NULL, NULL),
 (2, 'Fri', NULL, NULL),
 (2, 'Mon', NULL, NULL),
 (2, 'Sat', NULL, NULL),
 (2, 'Sun', NULL, NULL),
-(2, 'Thr', NULL, NULL),
+(2, 'Thu', NULL, NULL),
 (2, 'Tue', NULL, NULL),
 (2, 'Wed', '08:00:00', '16:00:00'),
 (3, 'Fri', '10:00:00', '20:00:00'),
 (3, 'Mon', NULL, NULL),
 (3, 'Sat', NULL, NULL),
 (3, 'Sun', NULL, NULL),
-(3, 'Thr', NULL, NULL),
+(3, 'Thu', NULL, NULL),
 (3, 'Tue', NULL, NULL),
 (3, 'Wed', NULL, NULL),
 (4, 'Fri', NULL, NULL),
 (4, 'Mon', NULL, NULL),
 (4, 'Sat', NULL, NULL),
 (4, 'Sun', NULL, NULL),
-(4, 'Thr', NULL, NULL),
+(4, 'Thu', NULL, NULL),
 (4, 'Tue', '12:00:00', '20:00:00'),
 (4, 'Wed', '08:00:00', '16:00:00'),
 (32, 'Fri', NULL, NULL),
 (32, 'Mon', '08:30:00', '20:30:00'),
 (32, 'Sat', NULL, NULL),
 (32, 'Sun', NULL, NULL),
-(32, 'Thr', NULL, NULL),
+(32, 'Thu', NULL, NULL),
 (32, 'Tue', NULL, NULL),
-(32, 'Wed', NULL, NULL);
+(32, 'Wed', NULL, NULL),
+(33, 'Fri', NULL, NULL),
+(33, 'Mon', NULL, NULL),
+(33, 'Sat', NULL, NULL),
+(33, 'Sun', NULL, NULL),
+(33, 'Thu', NULL, NULL),
+(33, 'Tue', NULL, NULL),
+(33, 'Wed', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -149,6 +156,7 @@ CREATE TABLE IF NOT EXISTS `email` (
 
 INSERT INTO `email` (`Email`, `EmployeeID`, `Type`) VALUES
 ('d@r5', 4, 'Personal'),
+('f', 33, 'Work'),
 ('f@ggrr', 1, 'Personal'),
 ('felixXXX@ioan.edu', 4, 'Work'),
 ('fmuno1899@gmail.com', 1, 'Personal'),
@@ -170,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `employee` (
   `lastName` varchar(20) NOT NULL,
   `Epassword` varchar(50) NOT NULL,
   PRIMARY KEY (`EmployeeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employee`
@@ -181,7 +189,8 @@ INSERT INTO `employee` (`EmployeeID`, `firstName`, `lastName`, `Epassword`) VALU
 (2, 'Julian', 'TP', 'duckduck'),
 (3, 'Kevin', 'G', 'words123'),
 (4, 'Felix', 'P', 'tryguessingthis'),
-(32, 'table ', 'show', 'h');
+(32, 'table ', 'show', 'h'),
+(33, 'manager', 'man', '123');
 
 -- --------------------------------------------------------
 
@@ -206,7 +215,8 @@ INSERT INTO `employeeprivlege` (`EmployeeID`, `PrivilegeID`) VALUES
 (2, 'E'),
 (4, 'E'),
 (32, 'E'),
-(3, 'M');
+(3, 'M'),
+(33, 'M');
 
 -- --------------------------------------------------------
 
@@ -223,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `location` (
   `State` varchar(2) NOT NULL,
   `Zip` int(5) NOT NULL,
   PRIMARY KEY (`LocationID`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `location`
@@ -258,34 +268,13 @@ CREATE TABLE IF NOT EXISTS `phone` (
 INSERT INTO `phone` (`PhoneNumber`, `EmployeeID`, `Type`) VALUES
 ('3470003005', 32, 'Work'),
 ('3477173005', 1, 'Work'),
+('5511146264', 33, 'Work'),
 ('5527938400', 2, 'Work'),
 ('6467965987', 1, 'Home'),
 ('6467965987', 4, 'Personal'),
 ('6477758312', 4, 'Work'),
 ('911', 2, 'Home'),
 ('9354637584', 3, 'Work');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `privilege`
---
-
-DROP TABLE IF EXISTS `privilege`;
-CREATE TABLE IF NOT EXISTS `privilege` (
-  `PrivilegeID` char(1) NOT NULL,
-  `Description` varchar(50) NOT NULL,
-  PRIMARY KEY (`PrivilegeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `privilege`
---
-
-INSERT INTO `privilege` (`PrivilegeID`, `Description`) VALUES
-('A', 'Admin'),
-('E', 'Employee'),
-('M', 'Manager');
 
 -- --------------------------------------------------------
 
@@ -300,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `wi_schedule` (
   `TotalWorkTime` float DEFAULT NULL,
   `StartTime` time DEFAULT NULL,
   `EndTime` time DEFAULT NULL,
-  `EndDate` date DEFAULT NULL,
+  `Date` date NOT NULL,
   PRIMARY KEY (`ScheduleID`),
   KEY `SIID_idx` (`ItemID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
@@ -309,11 +298,11 @@ CREATE TABLE IF NOT EXISTS `wi_schedule` (
 -- Dumping data for table `wi_schedule`
 --
 
-INSERT INTO `wi_schedule` (`ScheduleID`, `ItemID`, `TotalWorkTime`, `StartTime`, `EndTime`, `EndDate`) VALUES
-(1, 1, NULL, '09:00:00', NULL, NULL),
-(2, 2, NULL, '10:00:00', NULL, NULL),
-(3, 3, NULL, '09:00:00', NULL, NULL),
-(4, 4, NULL, '16:00:00', NULL, NULL);
+INSERT INTO `wi_schedule` (`ScheduleID`, `ItemID`, `TotalWorkTime`, `StartTime`, `EndTime`, `Date`) VALUES
+(1, 1, NULL, '09:00:00', NULL, '2021-04-20'),
+(2, 2, NULL, '10:00:00', NULL, '2021-04-12'),
+(3, 3, NULL, '09:00:00', NULL, '2021-04-22'),
+(4, 4, NULL, '16:00:00', NULL, '2021-04-13');
 
 -- --------------------------------------------------------
 
