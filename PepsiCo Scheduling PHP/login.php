@@ -5,6 +5,8 @@
 	$_SESSION = array();
 	session_destroy();
 	
+	//date_default_timezone_set("America/New_York");   <-- used to set the time zone
+	
 	/*if(isset($_SESSION["entered"]) && $_SESSION["entered"] === true) 
     {
 		header("location: login.php");
@@ -48,12 +50,13 @@
 				else if($row['PrivilegeID']=='M')
 				{
 					echo "<script>alert('This would lead to the MANAGER page!')</script>";
-					//header("location:manager.php");
+					header("location:employees.php");
 				}
 				
                 else
 				{
 					echo "<script>alert('This would lead to the EMPLOYEE page!')</script>";
+					$_SESSION['username']= $row['EmployeeID']; //session that has the employee ID not sure if really needed
                     //header("location:loggedin.php"); 
 				}
 					
