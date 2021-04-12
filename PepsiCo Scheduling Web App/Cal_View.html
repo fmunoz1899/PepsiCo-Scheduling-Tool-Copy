@@ -163,6 +163,44 @@
 
       <!------------------------------------->
 
+       <!--------------- Modal Code -------------->
+       <div class="modal fade" id="newBO" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Schedule New Workorder</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action = "cal_view.html" method = "POST">
+              <div class="form-group">
+                  <label>Start Time</label>
+                  <input type="Time" class="form-control" name="sTime" required>
+              </div>
+                       
+              <div class="form-group">
+                <label>End Time</label>
+                <input type="Time" class="form-control" name="eTime" required>
+            </div>  
+            <div class="form-group">
+                <label>Reason</label>
+                <input type="text" name="Description">
+            </div>
+                <button type="submit" name="submit" class="btn btn-primary">Blockout</button> 
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!------------------------------------->
+
       <div class = "row div_space "> 
         <div class = "col-md-1"></div>
         <div class = "col-md-10  cal_bg">
@@ -170,6 +208,7 @@
           <div class="item">
             <table class = "cal_tbl_bg">
               <tr>
+                <th><button type="button" data-toggle="modal" data-target="#newBO"> Blockout</button></th>
                 <th colspan="2"><b>John Smith</b></th>
               <tr class = "row_height">
                 <td class = "hour">8:00</td>
