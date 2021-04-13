@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 12, 2021 at 07:11 AM
+-- Generation Time: Apr 13, 2021 at 03:03 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `ahours` (
 
 INSERT INTO `ahours` (`EmployeeID`, `DayID`, `StartTime`, `EndTime`) VALUES
 (1, 'Fri', NULL, NULL),
-(1, 'Mon', NULL, NULL),
+(1, 'Mon', '06:00:00', '22:00:00'),
 (1, 'Sat', NULL, NULL),
 (1, 'Sun', '08:00:00', '14:00:00'),
 (1, 'Thu', '08:00:00', '10:00:00'),
@@ -108,9 +108,9 @@ CREATE TABLE IF NOT EXISTS `blackout` (
 --
 
 INSERT INTO `blackout` (`BlackoutID`, `EmployeeID`, `StartTime`, `EndTime`, `BDate`) VALUES
-(1, 3, '12:00:00', '13:00:00', '2021-02-15'),
-(2, 4, '08:00:00', '10:00:00', '2021-02-17'),
-(3, 4, '12:00:00', '15:00:00', '2021-03-10');
+(1, 1, '12:00:00', '13:00:00', '2021-04-12'),
+(2, 32, '08:00:00', '09:00:00', '2021-04-12'),
+(3, 32, '12:00:00', '15:00:00', '2021-04-12');
 
 -- --------------------------------------------------------
 
@@ -286,7 +286,7 @@ DROP TABLE IF EXISTS `wi_schedule`;
 CREATE TABLE IF NOT EXISTS `wi_schedule` (
   `ScheduleID` bigint(20) NOT NULL AUTO_INCREMENT,
   `ItemID` bigint(20) NOT NULL,
-  `TotalWorkTime` float DEFAULT NULL,
+  `ActualEndTime` time DEFAULT NULL,
   `StartTime` time DEFAULT NULL,
   `EndTime` time DEFAULT NULL,
   `Date` date NOT NULL,
@@ -298,11 +298,11 @@ CREATE TABLE IF NOT EXISTS `wi_schedule` (
 -- Dumping data for table `wi_schedule`
 --
 
-INSERT INTO `wi_schedule` (`ScheduleID`, `ItemID`, `TotalWorkTime`, `StartTime`, `EndTime`, `Date`) VALUES
-(1, 1, NULL, '09:00:00', NULL, '2021-04-20'),
-(2, 2, NULL, '10:00:00', NULL, '2021-04-12'),
-(3, 3, NULL, '09:00:00', NULL, '2021-04-22'),
-(4, 4, NULL, '16:00:00', NULL, '2021-04-13');
+INSERT INTO `wi_schedule` (`ScheduleID`, `ItemID`, `ActualEndTime`, `StartTime`, `EndTime`, `Date`) VALUES
+(1, 1, NULL, '09:00:00', '12:00:00', '2021-04-12'),
+(2, 2, NULL, '10:00:00', '11:00:00', '2021-04-12'),
+(3, 3, NULL, '09:00:00', '09:15:00', '2021-04-12'),
+(4, 4, NULL, '16:00:00', '20:00:00', '2021-04-12');
 
 -- --------------------------------------------------------
 
@@ -332,10 +332,9 @@ CREATE TABLE IF NOT EXISTS `workitem` (
 
 INSERT INTO `workitem` (`ItemID`, `EmployeeID`, `LocationID`, `DeliveryID`, `Description`, `InviteSent`, `PreferredE1`, `PreferredE2`) VALUES
 (1, 1, 1, 1, 'stuff', 0, 2, 3),
-(2, 3, 2, 3, NULL, 0, NULL, NULL),
-(3, 4, 3, 4, 'things and stuff', 0, 2, NULL),
-(4, 2, 4, 3, 'even more ~stuff~', 0, NULL, NULL),
-(5, 32, 1, 4, NULL, 0, NULL, NULL);
+(2, 32, 2, 3, NULL, 0, NULL, NULL),
+(3, 32, 3, 4, 'things and stuff', 0, 2, NULL),
+(4, 1, 4, 3, 'even more ~stuff~', 0, NULL, NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
