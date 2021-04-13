@@ -8,3 +8,5 @@ location: state changed to accept a max of 2 chars
 4/12
 privilege: that whole table has been dropped (was and will be unused)
 wi_schedule: EndDate became Date and cannot be null
+wi_schedule: TotalTimeSpent changed to ActualEndTime 
+EndTime cannot be NULL
