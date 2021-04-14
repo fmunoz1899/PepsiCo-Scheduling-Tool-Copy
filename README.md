@@ -16,3 +16,6 @@ Bro you're just mad that my nose didn't need surgery to look normal
 Roses are brown, violets are grey, Frankie found out he's colorblind today
 
 I bet that joke ^ really came out of the purple huh Frankie?
+
+Yea that did come out of the purple but ya know what else came out of the purple?
+Her dog tearing its ACL
