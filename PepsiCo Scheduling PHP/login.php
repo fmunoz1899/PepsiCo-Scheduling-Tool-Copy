@@ -49,15 +49,15 @@
 				
 				else if($row['PrivilegeID']=='M')
 				{
-					echo "<script>alert('This would lead to the MANAGER page!')</script>";
-					header("location:employees.php");
+					$_SESSION['manager']=true;
+					header("location:list_view.php");
 				}
 				
                 else
-				{
-					echo "<script>alert('This would lead to the EMPLOYEE page!')</script>";
+				{	
+					$_SESSION['emp']=true;
 					$_SESSION['username']= $row['EmployeeID']; //session that has the employee ID not sure if really needed
-                    //header("location:loggedin.php"); 
+                    header("location:empList_View.php"); 
 				}
 					
             }
@@ -115,7 +115,7 @@
                     <button type="submit" name="submit" class="btn btn-primary">Log In</button>           
             </form>
             <div id="err" class = "div1 text-danger"></div>
-                <a href = "List_View.php"><button class="button2">TEMP TO GET TO PAGE</button></a> 
+                <!--<a href = "List_View.php"><button class="button2">TEMP TO GET TO PAGE</button></a> -->
                 <!--<a href = "AdminLanding.html"><button class="button2">TEMP TO GET TO ADMIN</button></a> use log in to get to admin -->
        
     </body>
