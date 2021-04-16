@@ -7,12 +7,24 @@ $(document).ready(
         function()
         {
             //alert("clicked");
-            location.href = "List_View.html";
+            location.href = "List_View.php";
         });
         $("#CV").click(
             function()
             {
-                location.href = "Cal_View.html";
+                location.href = "Cal_View.php";
+            });
+			
+			$("#ELV").click(
+        function()
+        {
+            //alert("clicked");
+            location.href = "empList_View.php";
+        });
+        $("#ECV").click(
+            function()
+            {
+                location.href = "empCal_View.php";
             });
         $.fn.hScroll = function (amount) {
             amount = amount || 120;
