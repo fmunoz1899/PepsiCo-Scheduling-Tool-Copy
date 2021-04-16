@@ -361,7 +361,7 @@ echo"
 					{
 					if($numrow['type']!='Work')
 					{
-					   echo"<td>edit</td>";
+					   echo"<td><button>Edit</button></td>";
 					   echo"<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $ID . "'> <input name='transfer2' type='hidden' value='" . $numrow['phoneNumber'] . "'> <input name='transferID' type='hidden' value='" . $numrow['employeeID'] . "'> <button class='btn btn-primary' type='submit'>Remove</button></form></td>";					}
 					
 					else
