@@ -34,34 +34,16 @@
             <div>
                 <h1 class="h1_1">Displaying All Locations</h1>
             </div>
-<?php
-    include('connect.php');   
-	session_start();
-		
-	$LocationName="SELECT LocationName, LocationID FROM location";
-	$result=$link->query($LocationName);
-echo" 
-            <div class='row div_space'> 
-                <div class='col-md-1'> </div>
-                <div class='col-md-4'> 
-                    <label>Select location to filter results:</label> <!-- how exactly are we going to do the the filter for the locations -->
-                    <select name='locations' id='lid'>
-						<option>--Select one--</option>";
-                        while($row=$result->fetch_assoc()) 
-							echo '<option value="'.$row["LocationID"].'">'.$row["LocationName"].'</option>';
-echo"
-                    </select>
-                </div>
-	";
-echo'
-	<div class="col-md-9"> </div>
-      <div class="col-md-3">
-          <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newLoc"> Create New Location</button>
-      </div>
-
-	';
-	mysqli_close($link);
- ?>              
+<div class="row div_space">
+				<div class="col-md-1"></div>
+				<div class="col-md-7"> 
+					<form method="POST" action="FilterLocation.php" class = "form2">
+						<label>Search for a location:</label>
+						<input type="text" name="filterl" placeholder="Location Name">
+						<button class="btn btn-primary" type="submit">Filter</button>
+					</form>
+				</div>
+			</div>
       <!--------------- Modal Code -------------->
 <?php
 	include('connect.php');

@@ -37,27 +37,18 @@
             <div>
                 <h1 class="h1_1">Displaying all Scheduled Workorders</h1>
             </div>
-            
- <?php 
-	include('connect.php');
-	$names="SELECT firstName, lastName FROM employee";
-	$result=$link->query($names);
-echo" 
-            <!-- All names will be taken from the database -->
-            <div class='row div_space'> 
-                <div class='col-md-1'> </div>
-                <div class='col-md-4'> 
-                    <label>Select employee to filter results:</label>
-                    <select name='employees' id='emps'>
-						<option>Select One</option>";
-                        while($row=$result->fetch_assoc()) 
-							echo"<option value=" . $row["firstName"] . " " . $row["lastName"] . ">" . $row["firstName"] . " " . $row["lastName"] . "</option>";
-echo"
-                    </select>
-                </div>
-	";
-	mysqli_close($link);
- ?>  
+            <div class="row div_space">
+				<div class="col-md-1"></div>
+				<div class="col-md-7"> 
+					<form method="POST" action="ListView_Filter.php" class = "form2">
+						<label>Search for an Employee:</label>
+						<input type="text" name="filterfirst" placeholder="First Name"> 
+						<input type="text" name="filterlast" placeholder="Last Name"> 
+						<button class="btn btn-primary" type="submit">Filter</button>
+					</form>
+				</div>
+			</div>
+
 
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
@@ -178,7 +169,7 @@ echo"
 <?php
 //Dont know how you want this, if you only want work items that are fully scheduled or not
 	include('connect.php');
-	$sqlWI="SELECT firstName, lastName, workitem.ItemID, LocationName, Method, TotalWorkTime, StartTime, EndTime, Date
+	$sqlWI="SELECT firstName, lastName, workitem.ItemID, LocationName, Method, ActualEndTime, StartTime, EndTime, Date
 			FROM workitem,employee,delivery,wi_schedule,location
 			where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID and
 			workitem.LocationID=location.LocationID and workitem.DeliveryID=delivery.DeliveryID;";
@@ -204,7 +195,7 @@ echo"
 					<td>". $row["ItemID"]. "</td>
 					<td>" . $row["LocationName"]."</td>
 					<td>" . $row["Method"]."</td>
-					<td>" . $row["TotalWorkTime"]."</td>
+					<td>" . $row["ActualEndTime"]."</td>
 					<td>" . $row["StartTime"]."</td>
 					<td>" . $row["EndTime"]."</td>
 					<td>" . $row["Date"]."</td>
