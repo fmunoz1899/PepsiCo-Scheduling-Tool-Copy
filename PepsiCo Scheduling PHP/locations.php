@@ -34,19 +34,53 @@
             <div>
                 <h1 class="h1_1">Displaying All Locations</h1>
             </div>
-<div class="row div_space">
-				<div class="col-md-1"></div>
-				<div class="col-md-7"> 
-					<form method="POST" action="FilterLocation.php" class = "form2">
-						<label>Search for a location:</label>
-						<input type="text" name="filterl" placeholder="Location Name">
-						<button class="btn btn-primary" type="submit">Filter</button>
-					</form>
-				</div>
-			</div>
+<?php
+    include('connect.php');   
+	session_start();
+	
+	if(isset($_SESSION['manager']) && $_SESSION['manager']===true)
+	{
+		$LocationName="SELECT LocationName, LocationID FROM location"; //no user input 
+		$result=$link->query($LocationName);
+	echo" 
+				<div class='row div_space'> 
+					<div class='col-md-1'> </div>
+					<div class='col-md-7'> 
+						<form method='POST' action='filterlocation.php' class = 'form2'>
+							<label>Search for a location:</label>
+							<input type='text' name='filterl' placeholder='Location Name' required>
+							<button class='btn btn-primary' type='submit'>Filter</button>
+						</form>
+					</div>
+		";
+	echo'
+		<div class="col-md-9"> </div>
+		  <div class="col-md-3">
+			  <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newLoc"> Create New Location</button>
+		  </div>
+
+		';
+		mysqli_close($link);
+	}
+	
+	else
+	{
+		header("location:login.php?loc_no_man_tok");
+		exit;
+	}
+		
+ ?>              
       <!--------------- Modal Code -------------->
 <?php
 	include('connect.php');
+	
+	if(isset($_POST['id']) && $_POST['id']!='')
+	{
+		$id=filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
+		$rem=$link->prepare("DELETE FROM location WHERE locationID=?");
+		$rem->bind_param("i",$id);
+		$rem->execute();
+	}
 	
 	if(isset($_POST['LocationName']) && isset($_POST['Address']) && isset($_POST['state']) && isset($_POST['ZipCode']) && isset($_POST['city']) && $_POST['state']!='')
 	{
@@ -80,7 +114,7 @@
               </button>
             </div>
             <div class="modal-body">
-              <form action="location.php" method="POST">
+              <form action="locations.php" method="POST">
                 <p>Location Name: 
                  <input type="text" name="LocationName" required>
                 </p>
@@ -164,7 +198,7 @@
       <!------------------------------------->
 <?php
 	include('connect.php');
-	$sqlL="SELECT LocationName, StreetAdress, State, Zip FROM location";
+	$sqlL="SELECT LocationID, LocationName, StreetAdress, State, Zip FROM location";
 	$result=$link->query($sqlL);
 
 
@@ -175,14 +209,18 @@
         echo "<div class = 'col-md-10'>";
           echo " <table> ";
           echo "<tr>
-              <th> Location Name </th>
-              <th> Address </th>
-              <th> State </th>
-              <th> Zip </th>
+			  <th>Edit</th>
+			  <th>Remove</th>
+              <th>Location Name</th>
+              <th>Address</th>
+              <th>State</th>
+              <th>Zip</th>
               </tr>";
           while($row = $result->fetch_assoc()) 
           {
             echo "<tr>
+			  <td><button>Edit</button></td>
+			  <td><form method='POST' action='locations.php'><input name='id' type='hidden' value=".$row['LocationID']."><button>Remove</button></form></td>
               <td>".$row["LocationName"]. "</td>
               <td>". $row["StreetAdress"]. "</td>
               <td>" . $row["State"]."</td>
