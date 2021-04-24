@@ -2,15 +2,19 @@
 <html> 
 <head>
     <title>Pepsi Scheduling Tool</title>
-
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'rel='stylesheet'>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js?ver=1.3.2'></script>
+       <script type='text/javascript' src='/js/jquery.mousewheel.min.js'></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src='JavaScript/functionality.js'></script> 
+        <script language='Javascript' type='text/javascript' src="JS/fuck.js"></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -40,15 +44,20 @@
             </div>
             
             <!-- All names will be taken from the database -->
-            <div class="row div_space"> 
+           <div class="row div_space"> 
                 <div class="col-md-1"> </div>
                 <div class="col-md-4"> 
-                <label>Select employee to filter results:</label>
-                <select name="employees" id="emps">
-                    <option value="John Doe">John Doe</option>
-                    <option value="John Smith">John Smith</option>
-                    <option value="Robert Johnson">Robert Johnson</option>
-                  </select>
+                  <form class = "form2" method="POST" name="cal_form" id="cal_form" action="filtercal_view.php">
+                    <label>Search for an Employee:</label>
+                    <input type="text" name="filterfirst" placeholder="First Name"> <!-- might need to change so it can filter by first and last name separately-->
+                    
+                    <input type="text" name="filterlast" placeholder="Last Name"><br>
+                    <label>Select Date:</label> 
+                      <input name="datepicker" type="text" id="datepicker" readonly='true' placeholder="Click Here to Select Date">
+                      <button type="submit" name="submit" class="btn btn-primary">Filter</button>
+                  </form > 
+				  <button type="submit" name="clear" id="clear" class="btn btn-primary">Clear All</button>
+                
                 </div>
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
@@ -203,9 +212,9 @@
 
 <?php
 include('connect.php');
-date_default_timezone_set("America/New_York");
+date_default_timezone_set("America/New_York"); //timezone will need to change before giving 
 
-		$curday=substr(date("r"),0,3); //this gets me the day abbrivated for the blockout
+		$curday=substr(date("r"),0,3); //this gets me the day abbrivated for the ahours
 		$curdate=date("Y-m-j"); //this gets the current date and formats it in yyy-mm-dd
 echo"
       <div class = 'row div_space '> 
@@ -219,6 +228,7 @@ echo"
 		
 		while($rowID=$result->fetch_assoc())
 		{
+			$done=false; //to show that a work order was completed but only on the first blcok
 			$counter=1; //for schedule cycling
 			$counter2=0; //for blokcout cycling
 			$time=date('06:00:00'); //starting time of the day
@@ -236,7 +246,7 @@ echo"
                 <th><button type='button' data-toggle='modal' data-target='#newBO'>Blockout</button></th>
                 <th colspan='2'><b>".$rowsch['firstName']." ".$rowsch['lastName']."</b></th>";
 				
-				$items="SELECT starttime, endtime FROM wi_schedule, workitem WHERE wi_schedule.ItemID=workitem.ItemID and workitem.employeeID=".$rowID['employeeID']." and wi_schedule.Date='".$curdate."' order by StartTime";
+				$items="SELECT starttime, endtime, actualendtime FROM wi_schedule, workitem WHERE wi_schedule.ItemID=workitem.ItemID and workitem.employeeID=".$rowID['employeeID']." and wi_schedule.Date='".$curdate."' order by StartTime";
 				$result2=mysqli_query($link,$items);
 				$row = mysqli_fetch_array($result2);
 				
@@ -251,7 +261,6 @@ echo"
 				while($time!='22:00:00') //time day ends 
 				{
 					$entered=false; //if entered for schdule
-					
  echo"	            <tr class = 'row_height'>";
 					echo"<td class = 'hour'>".date('g:ia',strtotime($time))."</td>";
 					
@@ -269,10 +278,24 @@ echo"
 					
 					if($time>=$row[0] && $time<$row[1]) //to show when an employee has an appointment
 					{
-						if(strtotime('+15 minutes',strtotime($row[0]))==strtotime($row[1]))
+						if($row[2]!='' && !$done)//checks if an appointment was updated, which would then be considered completed
+						{
+							if(strtotime('+15 minutes',strtotime($row[0]))==strtotime($row[1]))
+								echo "<td class='sched_work_15_min'>Completed</td>";
+							else
+								echo "<td class='sched_work'>Completed</td>";
+							$done=true;
+						}
+						
+						else
+						{
+							if(strtotime('+15 minutes',strtotime($row[0]))==strtotime($row[1]))
 								echo "<td class='sched_work_15_min'>	</td>";
 							else
 								echo "<td class='sched_work'>	</td>";
+							
+						}
+						
 						$entered=true;
 					}
 					
@@ -281,14 +304,15 @@ echo"
 						mysqli_data_seek($result2,$counter);
 						$row = mysqli_fetch_array($result2);
 						$counter+=1;
+						$done=false;
 					}
 					
 					if($time>=$rowblock[0] && $time<$rowblock[1] && !$entered) //to show when an employee has a blockout time 
 					{
 						if(strtotime('+15 minutes',strtotime($rowblock[0]))==strtotime($rowblock[1]))
-								echo "<td class='blockout_15_min'>	</td>";
-							else
-								echo "<td class='blockout'>	</td>";
+							echo "<td class='blockout_15_min'>	</td>";
+						else
+							echo "<td class='blockout'>	</td>";
 						$entered=true;
 					}
 					
