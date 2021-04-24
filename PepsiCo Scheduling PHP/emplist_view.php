@@ -96,10 +96,10 @@
 					<td>". $row["ItemID"]. "</td>
 					<td>" . $row["LocationName"]."</td>
 					<td>" . $row["Method"]."</td>
-					<td>" . $row["ActualEndTime"]."</td>
-					<td>" . $row["StartTime"]."</td>
-					<td>" . $row["EndTime"]."</td>
-					<td>" . $row["Date"]."</td>
+					<td>" . date('g:ia',strtotime($row["ActualEndTime"]))."</td>
+					<td>" . date('g:ia',strtotime($row["StartTime"]))."</td>
+					<td>" . date('g:ia',strtotime($row["EndTime"]))."</td>
+					<td>" . date('n/j/Y',strtotime($row["Date"]))."</td>
 				</tr>";
 			}
 	echo'</div>';
