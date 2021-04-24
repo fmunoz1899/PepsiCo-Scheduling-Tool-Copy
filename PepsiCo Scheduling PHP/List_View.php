@@ -10,7 +10,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src='JavaScript/functionality.js'></script> 
+        <script language='Javascript' type='text/javascript' src='JS/fuck.js'></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -37,18 +37,35 @@
             <div>
                 <h1 class="h1_1">Displaying all Scheduled Workorders</h1>
             </div>
-            <div class="row div_space">
-				<div class="col-md-1"></div>
-				<div class="col-md-7"> 
-					<form method="POST" action="ListView_Filter.php" class = "form2">
-						<label>Search for an Employee:</label>
-						<input type="text" name="filterfirst" placeholder="First Name"> 
-						<input type="text" name="filterlast" placeholder="Last Name"> 
-						<button class="btn btn-primary" type="submit">Filter</button>
-					</form>
-				</div>
-			</div>
-
+            
+ <?php 
+	session_start();
+	
+	if(!isset($_SESSION['manager']) || $_SESSION===false)
+	{
+		header("location:login.php?list_view_no_man_tok");
+		exit;
+	}
+	
+	include('connect.php');
+	$names="SELECT firstName, lastName FROM employee";
+	$result=$link->query($names);
+echo" 
+            <!-- All names will be taken from the database -->
+            <div class='row div_space'> 
+                <div class='col-md-1'> </div>
+                <div class='col-md-4'> 
+                    <label>Select employee to filter results:</label>
+                    <select name='employees' id='emps'>
+						<option>Select One</option>";
+                        while($row=$result->fetch_assoc()) 
+							echo"<option value=" . $row["firstName"] . " " . $row["lastName"] . ">" . $row["firstName"] . " " . $row["lastName"] . "</option>";
+echo"
+                    </select>
+                </div>
+	";
+	mysqli_close($link);
+ ?>  
 
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
@@ -164,15 +181,16 @@
           </div>
         </div>
       </div>
+	  
 
       <!------------------------------------->
 <?php
-//Dont know how you want this, if you only want work items that are fully scheduled or not
+//Make sure to change this so that it only shows the engineers
 	include('connect.php');
 	$sqlWI="SELECT firstName, lastName, workitem.ItemID, LocationName, Method, ActualEndTime, StartTime, EndTime, Date
 			FROM workitem,employee,delivery,wi_schedule,location
 			where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID and
-			workitem.LocationID=location.LocationID and workitem.DeliveryID=delivery.DeliveryID;";
+			workitem.LocationID=location.LocationID and workitem.DeliveryID=delivery.DeliveryID ORDER BY firstName";
 	$result=$link->query($sqlWI);
 	echo'<div class="row tbl_space">';
 
@@ -184,7 +202,7 @@
 					<th> Workorder ID </th>
 					<th> Location </th>
 					<th> Delivery Method </th>
-					<th> Scheduled Hours </th>
+					<th> Actual End Time </th>
 					<th> Start Time </th>
 					<th> End Time </th>
 					<th> Date </th>
@@ -195,10 +213,10 @@
 					<td>". $row["ItemID"]. "</td>
 					<td>" . $row["LocationName"]."</td>
 					<td>" . $row["Method"]."</td>
-					<td>" . $row["ActualEndTime"]."</td>
-					<td>" . $row["StartTime"]."</td>
-					<td>" . $row["EndTime"]."</td>
-					<td>" . $row["Date"]."</td>
+					<td>" . date('g:ia',strtotime($row["ActualEndTime"]))."</td>
+					<td>" . date('g:ia',strtotime($row["StartTime"]))."</td>
+					<td>" . date('g:ia',strtotime($row["EndTime"]))."</td>
+					<td>" . date('n/j/Y',strtotime($row["Date"]))."</td>
 				</tr>";
 			}
 	echo'</div>';
