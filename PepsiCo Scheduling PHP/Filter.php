@@ -48,23 +48,23 @@
 			$_SESSION['last']=$time;*/
 		
 		if(isset($_SESSION['admin']) && $_SESSION['admin']===true)
-		{
-			
-		if((isset($_POST['filterfirst']) && $_POST['filterfirst']!='') || (isset($_POST['filterlast']) && $_POST['filterlast']!=''))
-		{
-			$cleanfirst=filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
-			$cleanlast=filter_var(htmlentities($_POST['filterlast'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
-			
-echo"		<h1 class='h1_1'>Filtered Results For: " . $cleanfirst . " " . $cleanlast . " </h1></div>";
-		}
+		{ 	
+			if((isset($_POST['filterfirst']) && $_POST['filterfirst']!='') || (isset($_POST['filterlast']) && $_POST['filterlast']!=''))
+			{
+				$cleanfirst=filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
+				$cleanlast=filter_var(htmlentities($_POST['filterlast'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
+				
+	
+			}
 		
 		
-		else
-		{
-			header("location:adminlanding.php?filter_no_transfer");
-			exit;
+			else
+			{
+				header("location:adminlanding.php?filter_no_transfer");
+				exit;
+			}
 		}
-		}
+		
 		else
 		{
 			header("location:login.php?filter_no_admintok");
@@ -72,18 +72,20 @@ echo"		<h1 class='h1_1'>Filtered Results For: " . $cleanfirst . " " . $cleanlast
 		}
 ?>
  
-          </div>
-          <div class="row "> 
-            <div class="col-md-9"> </div>
-                <div class="col-md-3">
-                    <button type="button" class="btn btn-primary mbut" onclick="location.href='AdminLanding.php';">Go Back</button>
+         
+<?php
+include('connect.php');
+echo"		<h1 class='h1_1'>Filtered Results For: " . $cleanfirst . " " . $cleanlast . " </h1></div>";
+echo"
+
+ </div>
+          <div class='row'> 
+            <div class='col-md-9'> </div>
+                <div class='col-md-3'>
+                    <a href='adminlanding.php'><button type='button' class='btn btn-primary mbut'>Go Back</button></a>
                 </div>
             </div>
         </div>
-<?php
-include('connect.php');
-
-echo"
         <div class='row tbl_space'> 
             <div class='col-md-1'> </div>
             <div class = 'col-md-10'>
@@ -94,17 +96,23 @@ echo"
                       <th>Last Name</th>
                       <th>Primary Email	</th>
                       <th>Primary Phone Number</th>
-                      <th>Schedule Information</th>
+                      <th>Sunday</th>
+					  <th>Monday</th>
+					  <th>Tuesday</th>
+					  <th>Wednesday</th>
+					  <th>Thursday</th>
+					  <th>Friday</th>
+					  <th>Saturday</th>
 					  <th>Role</th>
                     </tr>
                     <tr>"; //this will be left here for now as way to remember to do the edit and remove, whether it be button or hyperlink
 					
-					$searchfirst=filter_var($_POST['filterfirst'], FILTER_SANITIZE_STRING);
-					$searchlast=filter_var($_POST['filterlast'], FILTER_SANITIZE_STRING);
+					$searchfirst=str_replace(' ','',filter_var($_POST['filterfirst'], FILTER_SANITIZE_STRING));
+					$searchlast=str_replace(' ','',filter_var($_POST['filterlast'], FILTER_SANITIZE_STRING));
 					$searchfirst="%".$searchfirst."%";
 					$searchlast="%".$searchlast."%";
 
-					$peopleinfo=$link->prepare("SELECT firstName, lastName, email, phoneNumber, PrivilegeID 
+					$peopleinfo=$link->prepare("SELECT firstName, lastName, email, phoneNumber, PrivilegeID, employee.employeeID
 					FROM employee, employeeprivlege, email, phone 
 					where employee.EmployeeID=email.EmployeeID 
 					and email.Type='Work' 
@@ -116,22 +124,47 @@ echo"
 					$peopleinfo->bind_param("ss",$searchfirst,$searchlast);
 					$peopleinfo->execute();
 					$result=$peopleinfo->get_result();
-					$entered=False;
+					echo mysqli_num_rows($result)." result(s)";
 					while($row=$result->fetch_assoc())
 					{
-						$entered=True;
+						$schedule="SELECT DayID, TIME_FORMAT(StartTime, '%l:%i%p') AS StartTime, TIME_FORMAT(EndTime, '%l:%i%p') AS EndTime, employeeID 
+						FROM ahours WHERE EmployeeID=".$row['employeeID']." ORDER BY CASE 
+						when DayID='Sun' then 1 
+						when DayID='Mon' then 2 
+						when DayID='Tue' then 3 
+						when DayID='Wed' then 4 
+						when DayID='Thu' then 5 
+						when DayID='Fri' then 6 
+						when DayID='Sat' then 7 
+						else 8 end asc";
+						$quick=mysqli_query($link,$schedule);
 echo"		
 						<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $row['email'] . "'> <button class='btn btn-primary' type='submit'>Edit</button></form></td>
                         <td>" . $row['firstName'] . "</td>
                         <td>" . $row['lastName'] . "</td>
                         <td>" . $row['email'] . "</td>
-                        <td>" . $row['phoneNumber'] . "</td>
-                        <td>Schedule Info Here</td>
-						<td>" . $row['PrivilegeID'] . "</td>
+                        <td>" . $row['phoneNumber'] . "</td>";
+                       while($fullschd=$quick->fetch_assoc())
+						{
+							if($fullschd['DayID']=='Sun')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Mon')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Tue')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Wed')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Thu')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Fri')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+							if($fullschd['DayID']=='Sat')
+								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
+						}
+echo"						<td>" . $row['PrivilegeID'] . "</td>
                       </tr>
 					  ";
 					}
-					if($entered!=True);
 						//echo"<script>alert('There are no search results!'); window.location='AdminLanding.php'; </script>"; //displays message of no results and sends back to adminlanding
 
 					
