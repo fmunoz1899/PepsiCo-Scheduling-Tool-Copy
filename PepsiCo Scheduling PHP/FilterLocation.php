@@ -10,7 +10,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src='JavaScript/functionality.js'></script> 
+        <script language='Javascript' type='text/javascript' src='JS/functionality.js'></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -20,11 +20,12 @@
 
     <body>
         <nav class="navbar navbar-expand-sm fixed-top nav">
-           <ul class="navbar-nav">	
-                <li class="nav-item active"><a class="nav-link a2" href="AdminLanding.php">Employees</a></li>
-				<li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
-            </ul>
-      </nav>
+            <ul class="navbar-nav">	
+              <li class="nav-item active"><a class="nav-link" href="List_View.php">Schedule</a></li>
+              <li class="nav-item active"><a class="nav-link a2" href="employees.php">Employees</a></li>
+              <li class="nav-item active"><a class="nav-link a2" href="locations.php">Locations</a></li>
+			  <li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
+        </nav>
 
 
             <div class="jumbotron text-center jumbotron2">
@@ -35,6 +36,7 @@
 
             <div>
 <?php
+		include('connect.php');
 		session_start();
 			/*$time= $_SERVER['REQUEST_TIME'];
 			$timeout=5;
@@ -47,30 +49,29 @@
 				
 			$_SESSION['last']=$time;*/  
 		
-		/*if(isset($_SESSION['admin']) && $_SESSION['admin']===true)
+		if(isset($_SESSION['manager']) && $_SESSION['manager']===true)
 		{
 			
-		if((isset($_POST['filterfirst']) && $_POST['filterfirst']!='') || (isset($_POST['filterlast']) && $_POST['filterlast']!=''))
-		{
-			$cleanfirst=filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
-			$cleanlast=filter_var(htmlentities($_POST['filterlast'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
+			if((isset($_POST['filterl'])))
+			{
+				$cleanloc=filter_var(htmlentities($_POST['filterl'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING);
+				
+	echo"		<h1 class='h1_1'>Filtered Results For: " . $cleanloc . "</h1></div>";
+
+			}
 			
-echo"		<h1 class='h1_1'>Filtered Results For: " . $cleanfirst . " " . $cleanlast . " </h1></div>";
-		}
-		
-		
-		else
-		{
-			header("location:adminlanding.php?filter_no_transfer");
-			exit;
-		}
+			else
+			{
+				header("location:locations.php?filter_no_transfer");
+				exit;
+			}
 		}
 		else
 		{
-			header("location:login.php?filter_no_admintok");
+			header("location:login.php?loc_no_man_tok");
 			exit;
 		}
-*/		
+	
 ?>
  
           </div>
@@ -83,12 +84,20 @@ echo"		<h1 class='h1_1'>Filtered Results For: " . $cleanfirst . " " . $cleanlast
         </div>
 <?php
 include('connect.php');
-$searchl=$_POST["filterl"];
-		$sqlL="SELECT LocationName, StreetAdress, State, Zip
+
+
+$searchl=str_replace(' ','',filter_var(htmlentities($_POST['filterl'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING));
+$searchl="%".$searchl."%";
+		$sqlL=$link->prepare("SELECT LocationName, StreetAdress, State, Zip
 				FROM location 
-                where locationName LIKE '%$searchl%'";
-		$result=$link->query($sqlL);
-		if($result->num_rows > 0){
+                where locationName LIKE ?");
+		$sqlL->bind_param("s",$searchl);
+		$sqlL->execute();
+		$result=$sqlL->get_result();
+		
+		echo mysqli_num_rows($result)." result(s)";
+		if(mysqli_num_rows($result)>=0)
+		{
 echo"   <div class='row tbl_space'> 
             <div class='col-md-1'> </div>
             <div class = 'col-md-10'>
@@ -98,8 +107,7 @@ echo"   <div class='row tbl_space'>
                       <th>Street Address</th>
                       <th>State</th>
                       <th>Zip</th>
-                    </tr>
-                    <tr>";
+                    </tr>";
 		while($row = $result->fetch_assoc()) {
 				echo "<tr>
 					<td>".$row["LocationName"]. "</td>
@@ -108,9 +116,8 @@ echo"   <div class='row tbl_space'>
 					<td>" . $row["Zip"]."</td>
 				</tr>";
 			}
-		}	else{
-			echo "0 results for \"" . $searchl . "\"";
 		}
+
 	mysqli_close($link);
 ?>
 					
