@@ -40,10 +40,14 @@ $(document).ready(
         $(document).ready(function() {
             $('#items').hScroll(60); 
         });
-        $(document).ready(function() {
-            $('#datepicker').datepicker();
-            $('#datepicker').datepicker('setDate', 'today');
-           
+		
+		
+        $(document).ready(function() {		
+            $('#datepicker').datepicker({
+				minDate: new Date("today")+-7,
+				dateFormat: "mm/dd/yy"
+			});
+			$('#datepicker').datepicker('setDate','today');		
         });
   
     });
