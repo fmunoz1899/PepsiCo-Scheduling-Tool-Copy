@@ -392,7 +392,7 @@ echo"
 					{
 					   if($emrow['type']!='Work')
 					   {
-					      echo"<button id = 'UEm' class='btn btn-success EmailUpdate'type='button' data-toggle='modal' data-target='#UpdateEm' value='" . $emrow['email'] . "'>Edit</button></td>";";
+					      echo"<button id = 'UEm' class='btn btn-success EmailUpdate'type='button' data-toggle='modal' data-target='#UpdateEm' value='" . $emrow['email'] . "'>Edit</button></td>";
 					      echo"<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $ID . "'> <input name='transfer1' type='hidden' value='" . $emrow['email'] . "'> <input name='transferID' type='hidden' value='" . $emrow['employeeID'] . "'> <button class='btn btn-primary' type='submit'>Remove</button></form></td>";
 					   }
 					
