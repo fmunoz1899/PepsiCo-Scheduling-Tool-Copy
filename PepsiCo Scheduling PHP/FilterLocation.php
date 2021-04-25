@@ -10,7 +10,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src='JS/functionality.js'></script> 
+        <script language='Javascript' type='text/javascript' src='Javascript/functionality.js'></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -51,6 +51,13 @@
 		
 		if(isset($_SESSION['manager']) && $_SESSION['manager']===true)
 		{
+			if(isset($_POST['id']) && $_POST['id']!='' && isset($_POST['filterl']))
+			{
+				$id=filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
+				$rem=$link->prepare("DELETE FROM location WHERE locationID=?");
+				$rem->bind_param("i",$id);
+				$rem->execute();
+			}
 			
 			if((isset($_POST['filterl'])))
 			{
@@ -86,9 +93,9 @@
 include('connect.php');
 
 
-$searchl=str_replace(' ','',filter_var(htmlentities($_POST['filterl'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING));
-$searchl="%".$searchl."%";
-		$sqlL=$link->prepare("SELECT LocationName, StreetAdress, State, Zip
+$csearchl=str_replace(' ','',filter_var(htmlentities($_POST['filterl'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING));
+$searchl="%".$csearchl."%";
+		$sqlL=$link->prepare("SELECT LocationName, StreetAdress, State, Zip, LocationID
 				FROM location 
                 where locationName LIKE ?");
 		$sqlL->bind_param("s",$searchl);
@@ -103,6 +110,8 @@ echo"   <div class='row tbl_space'>
             <div class = 'col-md-10'>
 			<table>
                     <tr>
+					  <th>Edit</th>
+					  <th>Remove</th>
                       <th>Location</th>
                       <th>Street Address</th>
                       <th>State</th>
@@ -110,6 +119,8 @@ echo"   <div class='row tbl_space'>
                     </tr>";
 		while($row = $result->fetch_assoc()) {
 				echo "<tr>
+				<td><button>Edit</button></td>
+				<td><form method='POST' action='filterlocation.php'><input name='id' type='hidden' value=".$row['LocationID']."><input name='filterl' type='hidden' value='".$csearchl."'></input><button>Remove</button></form></td>
 					<td>".$row["LocationName"]. "</td>
 					<td>". $row["StreetAdress"]. "</td>
 					<td>" . $row["State"]."</td>
