@@ -14,7 +14,24 @@ $(document).ready(
             {
                 location.href = "Cal_View.php";
             });
-			
+//------------------ New JS Code ---------------------
+	$(".UpdateNnum").click(
+            function(e)
+            {
+                var phone = e.target.value;
+                console.log(phone);
+                $('#Number').val(phone);
+                
+            });
+        $(".EmailUpdate").click(
+            function(e)
+            {
+                var email = e.target.value;
+                console.log(email);
+                $('#EmailToEdit').val(email);
+                
+            });
+//------------------ End More will be placed above ---------------------	
 		$("#BV").click(
             function()
             {
