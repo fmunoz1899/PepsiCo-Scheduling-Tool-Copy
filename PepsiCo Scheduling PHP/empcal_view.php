@@ -19,7 +19,7 @@ date_default_timezone_set("America/New_York"); //timezone will need to change be
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src='JS/functionality.js'></script> 
+        <script language='Javascript' type='text/javascript' src='Javascript/functionality.js'></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -27,35 +27,39 @@ date_default_timezone_set("America/New_York"); //timezone will need to change be
         </script>
     </head>
 <?php
-	if(!isset($_SESSION['username']) || !isset($_SESSION['emp']) || $_SESSION['emp']===false)
+	if(!isset($_SESSION['emp']) || $_SESSION['emp']===false)
+	{
 		header("location:login.php?emp_no_tok");
+		exit;
+	}
 ?>
     <body>
       <nav class="navbar navbar-expand-sm">
         <ul class="navbar-nav">	
           <li class="nav-item active"><a class="nav-link" href="empList_View.php">Schedule</a></li>
-		  <li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
-
+			<li class="nav-item active"><a class="nav-link" href="emploc_View.php">Locations</a></li>
+			<li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
     </nav>
 
 
             <div class="jumbotron text-center jumbotron2">
-                <h1 class="font-weight-bold text-center">Eningeer Workorder List View</h1>
+                <h1 class="font-weight-bold text-center">Eningeer Workorder Calendar View</h1>
                 <img class = "img1"  src = "pepsi.png"> 
                 <hr class = "hr1">
             </div>
 
             <div>
                 <h1 class="h1_1">Displaying all Scheduled Workorders</h1>
+				<h3 class="h1_1">Within a week</h3>
             </div>
             
             <!-- All names will be taken from the database -->
            <div class="row div_space"> 
                 <div class="col-md-1"> </div>
                 <div class="col-md-4"> 
-                  <form class = "form2" method="POST">
+                  <form class = "form2" method="POST" action="filteremp_cal.php">
                     <label>Select Date:</label> 
-                      <input type="text" id="datepicker">
+                      <input type="text" id="datepicker2" name="datepicker2" readonly="true">
                       <button type="submit" name="submit" class="btn btn-primary">Filter</button>
                   </form > 
                 
@@ -63,8 +67,9 @@ date_default_timezone_set("America/New_York"); //timezone will need to change be
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
                       <form class = "select_form">
-                          <input class = "choice" type="radio" name="choice" id = "ELV"> List View 
-                          <input class = "choice" type="radio" name="choice" id = "ECV" checked> Calendar View
+                          <input class = "choice" type="radio" name="choice" id = "ELV"> Work Order List View <br>
+						  <input class = "choice" type="radio" name="choice" id = "BCV"> Block Out List View <br>
+                          <input class = "choice" type="radio" name="choice" id = "ECV" checked> Calendar View <br>
                       </form>
                   </div>
               </div>
@@ -77,52 +82,43 @@ date_default_timezone_set("America/New_York"); //timezone will need to change be
     
 
 <?php
-
-
-		$curday=substr(date("r"),0,3); //this gets me the day abbrivated for the blockout
-		$curdate=date("Y-m-j"); //this gets the current date and formats it in yyy-mm-dd
+		$curdate=date("Y-m-d"); //this gets the current date and formats it in yyy-mm-dd
+		$future=date("Y-m-d", strtotime($curdate.'+7days')); //to get the next 7 days
 echo"
       <div class = 'row div_space '> 
         <div class = 'col-md-1'></div>
         <div class = 'col-md-10  cal_bg'>
         <div id='items'>";
 		
-		
-		$empID="SELECT employee.employeeID FROM employee, ahours WHERE employee.employeeID=".$_SESSION['username']." and employee.employeeID=ahours.employeeID and StartTime!='NULL' and EndTime!='NULL' and DayID='".$curday."'";
-		$result=mysqli_query($link,$empID);
-		
-		while($rowID=$result->fetch_assoc())
+		while($curdate<=$future)
 		{
+			$done=false; //to show that a work order was completed but only on the first blcok
 			$counter=1; //for schedule cycling
 			$counter2=0; //for blokcout cycling
 			$time=date('06:00:00'); //starting time of the day
+			$curday=date("D",strtotime($curdate));//this gets me the day abbrivated for the ahours
 			
-			$sched="SELECT firstName, lastName, employee.employeeID, DayID, StartTime, EndTime
-					FROM employee, ahours
-					WHERE employee.employeeID=".$rowID['employeeID']." and employee.employeeID=ahours.employeeID and DayID='".$curday."'";
-					
-			$full=mysqli_query($link,$sched);
-			$rowsch=$full->fetch_assoc();
-echo"
+			echo"
           <div class='item'>
             <table class = 'cal_tbl_bg'>
               <tr>
                 <th></th>
-                <th colspan='2'><b>".$rowsch['firstName']." ".$rowsch['lastName']."</b></th>";
+                <th colspan='2'><b>".date('n/j/Y',strtotime($curdate))."</b></th>";
 				
-				$items="SELECT starttime, endtime, actualendtime FROM wi_schedule, workitem WHERE wi_schedule.ItemID=workitem.ItemID and workitem.employeeID=".$rowID['employeeID']." and wi_schedule.Date='".$curdate."' order by StartTime";
+				$items="SELECT starttime, endtime, actualendtime FROM wi_schedule, workitem WHERE wi_schedule.ItemID=workitem.ItemID and workitem.employeeID=".$_SESSION['username']." and wi_schedule.Date='".$curdate."' order by StartTime";
 				$result2=mysqli_query($link,$items);
 				$row = mysqli_fetch_array($result2);
 				
-				$ahours="SELECT StartTime, endtime FROM ahours WHERE ahours.EmployeeID=".$rowID['employeeID']." and ahours.DayID='".$curday."' order by StartTime";
+				$ahours="SELECT StartTime, endtime FROM ahours WHERE ahours.EmployeeID=".$_SESSION['username']." and ahours.DayID='".$curday."' order by StartTime";
 				$result3=mysqli_query($link,$ahours);
 				$rowahours = mysqli_fetch_array($result3);
 				
-				$blackout="SELECT starttime, endtime FROM blackout WHERE blackout.BDate='".$curdate."' and blackout.EmployeeID=".$rowID['employeeID']." order by StartTime";
+				$blackout="SELECT starttime, endtime FROM blackout WHERE blackout.BDate='".$curdate."' and blackout.EmployeeID=".$_SESSION['username']." order by StartTime";
 				$result4=mysqli_query($link,$blackout);
 				$rowblock = mysqli_fetch_array($result4);
-							
-				while($time!='22:00:00') //time day ends 
+			
+			
+			while($time!='22:00:00') //time day ends 
 				{
 					$entered=false; //if entered for schdule
 					
@@ -143,12 +139,13 @@ echo"
 					
 					if($time>=$row[0] && $time<$row[1]) //to show when an employee has an appointment
 					{
-						if($row[2]!='')//checks if an appointment was updated, which would then be considered completed
+						if($row[2]!='' && !$done)//checks if an appointment was updated, which would then be considered completed
 						{
 							if(strtotime('+15 minutes',strtotime($row[0]))==strtotime($row[1]))
 								echo "<td class='sched_work_15_min'>Completed</td>";
 							else
 								echo "<td class='sched_work'>Completed</td>";
+							$done=true;
 						}
 						
 						else
@@ -166,6 +163,7 @@ echo"
 						mysqli_data_seek($result2,$counter);
 						$row = mysqli_fetch_array($result2);
 						$counter+=1;
+						$done=false;
 					}
 					
 					if($time>=$rowblock[0] && $time<$rowblock[1] && !$entered) //to show when an employee has a blockout time 
@@ -191,20 +189,18 @@ echo"
 					
 					$time = date('H:i:s',strtotime('+15 minutes',strtotime($time))); //to increment the schdule by 15 minutes
 				}
- echo"            
+			$curdate=date("Y-m-d", strtotime($curdate.'+1days'));
+			
+			 echo"            
             </table>
-			</div>
-		";}
+			</div>";
+			
+		}
  ?>
 
             </table>
         </div>
        </div>
-	  </div>
-        
-
-            
-        
-            
+	  </div>    
     </body>
 </html>
