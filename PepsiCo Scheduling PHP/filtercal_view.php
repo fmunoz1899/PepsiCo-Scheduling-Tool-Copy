@@ -14,7 +14,7 @@
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src="JS/fuck.js"></script> 
+        <script language='Javascript' type='text/javascript' src="Javascript/functionality.js"></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -22,6 +22,13 @@
         </script>
     </head>
 <?php
+session_start();
+
+if(!isset($_SESSION['manager']) || $_SESSION['manager']===false)
+{
+	header('location:login.php?filcal_man_no_tok');
+	exit;
+}
 if((!isset($_POST['datepicker']) || $_POST['datepicker']=='') && (!isset($_POST['filterfirst']) || $_POST['filterfirst']=='') && (!isset($_POST['filterlast']) || $_POST['filterlast']==''))
 {
 	header("location:cal_view.php?no_filters");
@@ -52,13 +59,13 @@ date_default_timezone_set("America/New_York"); //timezone will need to change be
 if($_POST['datepicker']!='')
 {
 		$curday=date("D",strtotime($_POST['datepicker'])); //this gets me the day abbrivated for the ahours
-		$curdate=date("Y-m-j",strtotime($_POST['datepicker'])); //this gets the current date and formats it in yyy-mm-dd
+		$curdate=date("Y-m-d",strtotime($_POST['datepicker'])); //this gets the current date and formats it in yyy-mm-dd
 }
 
 else
 {
 	$curday=substr(date("r"),0,3); //this gets me the day abbrivated for the ahours
-	$curdate=date("Y-m-j"); //this gets the current date and formats it in yyy-mm-dd
+	$curdate=date("Y-m-d"); //this gets the current date and formats it in yyy-mm-dd
 }
 
 $fname=str_replace(' ','',"%".filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."%");
@@ -80,7 +87,7 @@ echo"
 
             <div>";
 			if($fname == '%%' && $lname == '%%')
-                echo"<h1 class='h1_1'>Filter results on ". date("n/j/y",strtotime($curdate))."</h1>";
+                echo"<h1 class='h1_1'>Filter results for ". date("n/j/y",strtotime($curdate))."</h1>";
 			else
 				echo"<h1 class='h1_1'>Filter results for".substr($fname,1,-1)." ".substr($lname,1,-1)." on ". date("n/j/y",strtotime($curdate))."</h1>";
 			echo mysqli_num_rows($result)." result(s)";
