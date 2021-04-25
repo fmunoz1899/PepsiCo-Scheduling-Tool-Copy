@@ -22,6 +22,7 @@
         <nav class="navbar navbar-expand-sm fixed-top nav">
            <ul class="navbar-nav">	
                 <li class="nav-item active"><a class="nav-link a2" href="AdminLanding.php">Employees</a></li>
+				<li class="nav-item active"><a class="nav-link a2" href="adminloc.php">Locations</a></li>
 				<li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
             </ul>
       </nav>
@@ -43,9 +44,9 @@
 				<div class="col-md-7"> <!-- fuck this fix it please thanks -->
 					<form method="POST" action="Filter.php" class = "form2">
 						<label>Search for an Employee:</label>
-						<input type="text" name="filterfirst" placeholder="First Name"> <!-- might need to change so it can filter by first and last name separately-->
+						<input type="text" name="filterfirst" placeholder="First Name"> 
 						<br>
-						<input type="text" name="filterlast" placeholder="Last Name"> <!-- might need to change so it can filter by first and last name separately-->
+						<input type="text" name="filterlast" placeholder="Last Name"> 
 						<button class="btn btn-primary" type="submit">Filter</button>
 					</form>
 				</div>
@@ -53,7 +54,7 @@
 					
 					
 
-          <div class="row "> 
+          <div class="row"> 
             <div class="col-md-9"> </div>
                 <div class="col-md-3">
                     <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newEmp"> New Employee</button>
@@ -99,14 +100,16 @@
 			$final= $check->get_result();
             $rowcount=mysqli_num_rows($final);
 			
-			if($rowcount==0)
+			if($rowcount==0) //not allowing the removal of an employee if the have a work item scheduled
 			{
-				$remove=$link->prepare("DELETE email, employee, phone, employeeprivlege, ahours 
+				//make sure to remove from blockout
+				$remove=$link->prepare("DELETE email, employee, phone, employeeprivlege, ahours, blackout
 										FROM email 
 										INNER JOIN employee on employee.EmployeeID=email.EmployeeID 
 										INNER JOIN phone on phone.EmployeeID=employee.EmployeeID 
-										INNER JOIN employeeprivlege on employeeprivlege.EmployeeID=employee.EmployeeID 
+										INNER JOIN employeeprivlege on employeeprivlege.EmployeeID=phone.EmployeeID 
 										INNER JOIN ahours on ahours.employeeID=employeeprivlege.employeeID 
+										INNER JOIN blackout on blackout.employeeID=ahours.employeeID
 										WHERE email.EmployeeID=?");
 				$remove->bind_param("i",$row['employeeID']);
 				$remove->execute();
@@ -300,7 +303,7 @@ echo"
 					while($row=$result->fetch_assoc())
 					{
 						$schedule="SELECT DayID, TIME_FORMAT(StartTime, '%l:%i%p') AS StartTime, TIME_FORMAT(EndTime, '%l:%i%p') AS EndTime, employeeID 
-						FROM ahours WHERE EmployeeID=".$row['employeeID']." order by case 
+						FROM ahours WHERE EmployeeID=".$row['employeeID']." ORDER BY CASE 
 						when DayID='Sun' then 1 
 						when DayID='Mon' then 2 
 						when DayID='Tue' then 3 
