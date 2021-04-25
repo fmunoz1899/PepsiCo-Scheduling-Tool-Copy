@@ -290,6 +290,69 @@ include('connect.php');
     </div>
 
     <!------------------------------------->
+
+  <!--------------- Modal Code For Updating email -------------->
+
+	<div class="modal fade" id="UpdateEm" tabindex="-1" role="dialog" aria-labelledby="AddInformation" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title">Update Employee Email</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body modalContent">
+			<form class = "form1" action = "EmployeeInfo.php" method = "POST">
+				<input type="hidden" name="transfer" value=<?php echo filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL);?>><!-- this allows the primary email continue to be used for the specific employee-->
+					<div class="form-group">
+						<label>Email (will be set as personal)</label>
+						<input type="email" class="form-control" name="addemail" id = "EmailToEdit">
+					</div>
+				<button type="submit" name="submit" class="btn btn-primary">Update</button> 
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		</div>
+	</div>
+        </div>
+    </div>
+
+
+      <!------------------------------------->
+
+ <!--------------- Modal Code For Updating Phone -------------->
+
+ <div class="modal fade" id="UpdatePhone" tabindex="-1" role="dialog" aria-labelledby="UpdateNumber" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<h5 class="modal-title" id="exampleModalLongTitle">Update Employee Phone Number </h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body modalContent">
+			<form class = "form1" id = "UpdateP" action = "EmployeeInfo.php" method = "POST">
+				<div class="form-group">
+					<label> Phone Number</label>
+					<input type="tel" id = "Number" class="form-control" name="addnum" minlength="10" maxlength="10" >
+					<input id="personal" type="radio" name="type" value="Personal" checked>
+					<label for="personal">Personal</label><br>
+					<input type="radio" id="home" name="type" value="Home">
+					<label for="home">Home</label>
+				</div>
+			<button type="submit" name="submit" class="btn btn-primary">Update</button> 
+			</form>
+		</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+        </div>
+    </div>
+      <!------------------------------------->
 	<!--include('connect.php');
 			$dispname="SELECT firstName, lastName FROM email, employee WHERE email.email='".$_POST['transfer']."' and email.employeeID=employee.employeeID";
 			$result=mysqli_query($link,$dispname);
@@ -329,7 +392,7 @@ echo"
 					{
 					   if($emrow['type']!='Work')
 					   {
-					      echo"<td>edit</td>";
+					      echo"<button id = 'UEm' class='btn btn-success EmailUpdate'type='button' data-toggle='modal' data-target='#UpdateEm' value='" . $emrow['email'] . "'>Edit</button></td>";";
 					      echo"<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $ID . "'> <input name='transfer1' type='hidden' value='" . $emrow['email'] . "'> <input name='transferID' type='hidden' value='" . $emrow['employeeID'] . "'> <button class='btn btn-primary' type='submit'>Remove</button></form></td>";
 					   }
 					
@@ -361,7 +424,9 @@ echo"
 					{
 					if($numrow['type']!='Work')
 					{
-					   echo"<td><button>Edit</button></td>";
+					   echo"<tr>
+							<td>
+							<button id = 'UPnum' class='btn btn-success UpdateNnum'type='button' data-toggle='modal' data-target='#UpdatePhone' value='" . $numrow['phoneNumber'] ."'>Edit</button></td>";
 					   echo"<td><form method='POST' action='EmployeeInfo.php'> <input name='transfer' type='hidden' value='" . $ID . "'> <input name='transfer2' type='hidden' value='" . $numrow['phoneNumber'] . "'> <input name='transferID' type='hidden' value='" . $numrow['employeeID'] . "'> <button class='btn btn-primary' type='submit'>Remove</button></form></td>";					}
 					
 					else
