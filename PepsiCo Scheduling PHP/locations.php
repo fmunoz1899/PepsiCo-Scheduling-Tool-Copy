@@ -76,10 +76,22 @@
 	
 	if(isset($_POST['id']) && $_POST['id']!='')
 	{
-		$id=filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
-		$rem=$link->prepare("DELETE FROM location WHERE locationID=?");
-		$rem->bind_param("i",$id);
-		$rem->execute();
+		
+		$check=$link->prepare("SELECT locationID FROM workitem WHERE locationID=?");
+			$check->bind_param("i",$_POST['id']);
+			$check->execute();
+			
+			$final= $check->get_result();
+            $rowcount=mysqli_num_rows($final);
+		if($rowcount==0)
+		{
+			$id=filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
+			$rem=$link->prepare("DELETE FROM location WHERE locationID=?");
+			$rem->bind_param("i",$id);
+			$rem->execute();
+		}
+		else
+			echo "<script>alert('The location is currently in use!');</script>";
 	}
 	
 	if(isset($_POST['LocationName']) && isset($_POST['Address']) && isset($_POST['state']) && isset($_POST['ZipCode']) && isset($_POST['city']) && $_POST['state']!='')
