@@ -9,12 +9,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js?ver=1.3.2'></script>
-       <script type='text/javascript' src='/js/jquery.mousewheel.min.js'></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+        <script type='text/javascript' src='/js/jquery.mousewheel.min.js'></script>
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src="JS/fuck.js"></script> 
+        <script language='Javascript' type='text/javascript' src="Javascript/functionality.js"></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -31,8 +31,14 @@
 		  <li class="nav-item active"><a class="nav-link a2" href="login.php">Log Out</a></li>
 
     </nav>
-
-
+<?php
+session_start();
+if(!isset($_SESSION['manager']) || $_SESSION['manager']===false)
+{
+	header('location:login.php?cal_man_no_tok');
+	exit;
+}
+?>
             <div class="jumbotron text-center jumbotron2">
                 <h1 class="font-weight-bold text-center">Manager Workorder List View</h1>
                 <img class = "img1"  src = "pepsi.png"> 
@@ -41,6 +47,7 @@
 
             <div>
                 <h1 class="h1_1">Displaying all Scheduled Workorders</h1>
+				 <h3 class="h1_1">For Today</h3>
             </div>
             
             <!-- All names will be taken from the database -->
@@ -57,13 +64,15 @@
                       <button type="submit" name="submit" class="btn btn-primary">Filter</button>
                   </form > 
 				  <button type="submit" name="clear" id="clear" class="btn btn-primary">Clear All</button>
+				   <br>If no date selected with first and/or last name, date will default today
                 
                 </div>
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
                       <form class = "select_form">
-                          <input class = "choice" type="radio" name="choice" id = "LV"> List View 
-                          <input class = "choice" type="radio" name="choice" id = "CV" checked> Calendar View
+                          <input class = "choice" type="radio" name="choice" id = "LV"> Work Order List View</input><br>
+						   <input class = "choice" type="radio" name="choice" id = "BV"> Blockout List View</input></br>
+                          <input class = "choice" type="radio" name="choice" id = "CV" checked> Calendar View</input>
                       </form>
                   </div>
               </div>
@@ -215,7 +224,7 @@ include('connect.php');
 date_default_timezone_set("America/New_York"); //timezone will need to change before giving 
 
 		$curday=substr(date("r"),0,3); //this gets me the day abbrivated for the ahours
-		$curdate=date("Y-m-j"); //this gets the current date and formats it in yyy-mm-dd
+		$curdate=date("Y-m-d"); //this gets the current date and formats it in yyy-mm-dd
 echo"
       <div class = 'row div_space '> 
         <div class = 'col-md-1'></div>
@@ -339,11 +348,6 @@ echo"
             </table>
         </div>
        </div>
-	  </div>
-        
-
-            
-        
-            
+	  </div>      
     </body>
 </html>
