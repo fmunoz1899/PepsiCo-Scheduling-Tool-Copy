@@ -191,18 +191,19 @@
 
       <!------------------------------------->
 <?php
-//Make sure to change this so that it only shows the engineers
 	include('connect.php');
 	date_default_timezone_set("America/New_York");
 	$curdate=date("Y-m-d");
 	
 	$sqlWI="SELECT firstName, lastName, workitem.ItemID, LocationName, Method, ActualEndTime, StartTime, EndTime, Date
-			FROM workitem,employee,delivery,wi_schedule,location
+			FROM workitem,employee,delivery,wi_schedule,location,employeeprivlege
 			where workitem.EmployeeID=employee.EmployeeID 
 			and workitem.ItemID=wi_schedule.ItemID 
 			and workitem.LocationID=location.LocationID 
 			and workitem.DeliveryID=delivery.DeliveryID
-			and Date='".$curdate."' 
+            and employee.EmployeeID=employeeprivlege.EmployeeID
+            and PrivilegeID='E'
+            and Date='".$curdate."' 
 			ORDER BY Date, StartTime, EndTime";
 	$result=$link->query($sqlWI);
 	echo'<div class="row tbl_space">';

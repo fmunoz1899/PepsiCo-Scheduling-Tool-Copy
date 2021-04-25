@@ -38,20 +38,37 @@
                 <h1 class="h1_1">Displaying all Employees</h1>
             </div>
             
-            <!-- All names will be taken from the database -->
-            <div class="row div_space"> 
-                <div class="col-md-1"> </div>
-                <div class="col-md-4"> 
-                <label>Select employee to filter results:</label>
-                <select name="employees" id="emps">
-                    <option value="John Doe">John Doe</option>
-                    <option value="Jane Doe">Jane Doe</option>
-                    <option value="John Smith">John Smith</option>
-                    <option value="Robert Johnson">Robert Johnson</option>
-                  </select>
-                </div>
-                
-          </div>
+<?php
+    include('connect.php');   
+	session_start();
+	
+	if(isset($_SESSION['manager']) && $_SESSION['manager']===true)
+	{
+		$LocationName="SELECT LocationName, LocationID FROM location"; //no user input 
+		$result=$link->query($LocationName);
+	echo" 
+				<div class='row div_space'> 
+					<div class='col-md-1'> </div>
+					<div class='col-md-7'> 
+						<form method='POST' action='filteremp.php' class = 'form2'>
+							<label>Search for an Employee:</label>
+						<input type='text' name='filterfirst' placeholder='First Name'> 
+						<br>
+						<input type='text' name='filterlast' placeholder='Last Name'> 
+						<button class='btn btn-primary' type='submit'>Filter</button>
+						</form>
+					</div>
+		";
+		mysqli_close($link);
+	}
+	
+	else
+	{
+		header("location:login.php?loc_no_man_tok");
+		exit;
+	}
+		
+ ?>
          
       </div>
 
