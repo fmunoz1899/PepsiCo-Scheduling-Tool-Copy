@@ -6,11 +6,16 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'rel='stylesheet'>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+        <script type='text/javascript' src='/js/jquery.mousewheel.min.js'></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel='stylesheet' type='text/css' href='CSS/pepsi_styles.css'>
-        <script language='Javascript' type='text/javascript' src='JS/fuck.js'></script> 
+        <script language='Javascript' type='text/javascript' src="Javascript/functionality.js"></script> 
         <script>
                 $(document).ready(function(){
                   $('[data-toggle="tooltip"]').tooltip();   
@@ -46,32 +51,33 @@
 		header("location:login.php?list_view_no_man_tok");
 		exit;
 	}
-	
-	include('connect.php');
-	$names="SELECT firstName, lastName FROM employee";
-	$result=$link->query($names);
-echo" 
+?>
+
             <!-- All names will be taken from the database -->
             <div class='row div_space'> 
                 <div class='col-md-1'> </div>
                 <div class='col-md-4'> 
-                    <label>Select employee to filter results:</label>
-                    <select name='employees' id='emps'>
-						<option>Select One</option>";
-                        while($row=$result->fetch_assoc()) 
-							echo"<option value=" . $row["firstName"] . " " . $row["lastName"] . ">" . $row["firstName"] . " " . $row["lastName"] . "</option>";
-echo"
-                    </select>
+                    <form class = "form2" method="POST" name="cal_form" id="cal_form" action="filterlist_view.php">
+                    <label>Search for an Employee:</label>
+                    <input type="text" name="filterfirst" placeholder="First Name"> <!-- might need to change so it can filter by first and last name separately-->
+                    <input type="text" name="filterlast" placeholder="Last Name"><br>
+                    <label>Select Date:</label> 
+                      <input name="datepicker" type="text" id="datepicker" readonly='true' placeholder="Click Here to Select Date">
+                      <button type="submit" name="submit" class="btn btn-primary">Filter</button>
+                  </form > 
+				  <button type="submit" name="clear" id="clear" class="btn btn-primary">Clear All</button>
+				  <br>If no date selected with first and/or last name, date will default today
                 </div>
-	";
-	mysqli_close($link);
- ?>  
+	
+
+   
 
                 <div class="col-md-3"></div>
                   <div class="col-md-3 divborder">
                       <form class = "select_form">
-                          <input class = "choice" type="radio" name="choice" id = "LV" checked> List View 
-                          <input class = "choice" type="radio" name="choice" id = "CV"> Calendar View
+                          <input class = "choice" type="radio" name="choice" id = "LV" checked> Work Order List View</input><br>
+						   <input class = "choice" type="radio" name="choice" id = "BV"> Blockout List View</input></br>
+                          <input class = "choice" type="radio" name="choice" id = "CV"> Calendar View</input>
                       </form>
                   </div>
               </div>
@@ -187,10 +193,17 @@ echo"
 <?php
 //Make sure to change this so that it only shows the engineers
 	include('connect.php');
+	date_default_timezone_set("America/New_York");
+	$curdate=date("Y-m-d");
+	
 	$sqlWI="SELECT firstName, lastName, workitem.ItemID, LocationName, Method, ActualEndTime, StartTime, EndTime, Date
 			FROM workitem,employee,delivery,wi_schedule,location
-			where workitem.EmployeeID=employee.EmployeeID and workitem.ItemID=wi_schedule.ItemID and
-			workitem.LocationID=location.LocationID and workitem.DeliveryID=delivery.DeliveryID ORDER BY firstName";
+			where workitem.EmployeeID=employee.EmployeeID 
+			and workitem.ItemID=wi_schedule.ItemID 
+			and workitem.LocationID=location.LocationID 
+			and workitem.DeliveryID=delivery.DeliveryID
+			and Date='".$curdate."' 
+			ORDER BY Date, StartTime, EndTime";
 	$result=$link->query($sqlWI);
 	echo'<div class="row tbl_space">';
 
