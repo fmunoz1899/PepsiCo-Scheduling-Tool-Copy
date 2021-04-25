@@ -10,3 +10,6 @@ privilege: that whole table has been dropped (was and will be unused)
 wi_schedule: EndDate became Date and cannot be null
 wi_schedule: TotalTimeSpent changed to ActualEndTime 
 EndTime cannot be NULL
+
+4/24
+blackout: there was an added column for the reason of the blockout time
