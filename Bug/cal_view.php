@@ -680,6 +680,88 @@ include('connect.php');
 
       <!------------------------------------->
 
+	 <!--------------- Modal Code For Details -------------->
+	 <div class="modal fade" id="Details" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Workorder Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+            </div>
+            <div class="modal-body modalContent">
+			<form class = "form1" action = "List_View.html" method = "POST" >
+              <div class="form-group">
+                <label> First Choice Engineer:</label>
+                    <select name="employee" id = "MainEng" disabled>
+                      <option value="" disabled selected>Select One</option>
+                      <option value="m">Main Employee</option>
+                      <option value="s">Second Employee</option>
+                      <option value="t">Third Employee</option>
+                    </select>
+              </div>
+              <div class="form-group">
+                <label> Second Choice Engineer:</label>
+                <select name="employee" id = "SecEng" disabled>
+                    <option value="" disabled selected>Select One</option>
+                    <option value="m">Main Employee</option>
+                    <option value="s">Second Employee</option>
+                    <option value="t">Third Employee</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                <label> Third Choice Engineer:</label>
+                <select name="employee" id = "ThirdEng" disabled>
+                    <option value="" disabled selected>Select One</option>
+                    <option value="m">Main Employee</option>
+                    <option value="s">Second Employee</option>
+                    <option value="t">Third Employee</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label> Date:</label>
+                  <input type="date" id = "WODate" class="form-control" name="date" disabled>
+              </div>
+              <div class="form-group">
+                  <label> Start Time:</label>
+                  <input type="time" id = "stime" class="form-control" name="time" disabled>
+              </div>
+              <div class="form-group">
+                  <label> End Time:</label>
+                  <input type="time" id = "etime" class="form-control" name="endtime" disabled>
+              </div>
+              <div class="form-group">
+                <label> Location:</label><br>
+                    <select name="SelectLocation" disabled>
+                          <option value=""  selected>Select One</option>
+                          <option>Location 1</option>
+                          <option>Location 2</option>
+                          <option>Location 3</option>
+                    </select>
+              </div>
+              <div class="form-group">
+                <label> Delivery method: </label>
+                    <select name="SelectDelivery" disabled>
+                          <option value=""  selected>Select One</option>
+                          <option>Delivery 1</option>
+                          <option>Delivery 2</option>
+                          <option>Delivery 3</option>
+                    </select>
+              </div>
+              <div class="form-group">
+                <label> Description:</label>
+                  <input type="text" name="Description" id = "desc" name = "woDescription" disabled>
+              </div>
+				</form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- ----------------------------------------------- -->
+
 <?php
 include('connect.php');
 date_default_timezone_set("America/New_York"); //timezone will need to change before giving 
@@ -705,6 +787,7 @@ echo"
 		
 		while($rowID=$result->fetch_assoc())
 		{
+			$first = 1; //check if it's first td in schedule
 			$done=false; //to show that a work order was completed but only on the first blcok
 			$counter=1; //for schedule cycling
 			$counter2=0; //for blokcout cycling
@@ -723,7 +806,7 @@ echo"
                 
                 <th colspan='2'><b>".$rowsch['firstName']." ".$rowsch['lastName']."</b></th>";
 				
-				$items="SELECT starttime, endtime, actualendtime FROM wi_schedule, workitem WHERE wi_schedule.ItemID=workitem.ItemID and workitem.employeeID=".$rowID['employeeID']." and wi_schedule.Date='".$curdate."' order by StartTime";
+				$items="SELECT starttime, endtime, actualendtime, scheduleid FROM wi_schedule, workitem WHERE wi_schedule.ItemID=workitem.ItemID and workitem.employeeID=".$rowID['employeeID']." and wi_schedule.Date='".$curdate."' order by StartTime";
 				$result2=mysqli_query($link,$items);
 				$row = mysqli_fetch_array($result2);
 				
@@ -737,17 +820,21 @@ echo"
 							
 				while($time!='22:00:00') //time day ends 
 				{
-						
+					
 					$entered=false; //if entered for schedule
  echo"	            <tr class = 'row_height'>";
-					echo"<td class = 'hour'>&nbsp;".date('g:ia',strtotime($time))."&nbsp;</td>";
+					echo"<td class = 'hour'>&nbsp;".date('g:ia',strtotime($time))."&nbsp; </td>";
 					
 					if($time<$rowahours[0] || $time>=$rowahours[1]) //to show when an employee is or is not working
 					{
 						if(strtotime('+15 minutes',strtotime($rowahours[0]))==strtotime($rowahours[1]))
-							echo "<td class='no_work_15_min'>	</td>";
+							echo "<td class='no_work_15_min'>	
+							
+							</td>";
 						else
-							echo "<td class='no_work'>	</td>";
+							echo "<td class='no_work'>	
+							
+							</td>";
 						$entered=true;
 					}
 					
@@ -756,18 +843,33 @@ echo"
 						if($row[2]!='' && !$done)//checks if an appointment was updated, which would then be considered completed
 						{
 							if(strtotime('+15 minutes',strtotime($row[0]))==strtotime($row[1]))
-								echo "<td class='sched_work_15_min'>Completed</td>";
+								echo "<td class='sched_work_15_min'>Completed </td>";
 							else
-								echo "<td class='sched_work'>Completed</td>";
+								echo "<td class='sched_work'>Completed </td>";
 							$done=true;
 						}
 						
 						else
 						{
 							if(strtotime('+15 minutes',strtotime($row[0]))==strtotime($row[1]))
-								echo "<td class='sched_work_15_min'>	</td>";
+								echo "<td class='sched_work_15_min'></td>";
 							else
-								echo "<td class='sched_work'>	</td>";
+							{
+								if ($first == 1)
+								{
+									echo "<td class='sched_work'> <button class='btn btn-success sid' type='button' data-toggle='modal' data-target='#Details' value='" . $row['scheduleid'] . "'>Details</button>
+									 <button> Edit </button> </td>";
+									$first += 1;
+								}
+								else
+								{
+									echo "<td class='sched_work'> hello</td>";
+
+								}
+
+							}
+
+								
 							
 						}
 						
@@ -788,9 +890,9 @@ echo"
 					if($time>=$rowblock[0] && $time<=$rowblock[1] && !$entered) //to show when an employee has a blockout time 
 					{
 						if(strtotime('+15 minutes',strtotime($rowblock[0]))==strtotime($rowblock[1]))
-							echo "<td class='blockout_15_min'>	bitch</td>";
+							echo "<td class='blockout_15_min'>	<button> edit </button></td>";
 						else
-							echo "<td class='blockout'>	</td>";
+							echo "<td class='blockout'> 	</td>";
 						$entered=true;
 					}
 					
@@ -803,7 +905,7 @@ echo"
 					
 					
 					if(!$entered) //if there is nothing happening at a specific time while the employee is on the clock
-						echo "<td>fuck	</td>";
+						echo "<td>	</td>";
 
 										
 echo"					</tr>";
