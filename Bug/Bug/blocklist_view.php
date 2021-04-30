@@ -358,14 +358,14 @@ if((isset($_POST['forall']) || isset($_POST['who'])) && isset($_POST['sTime']) &
                   <label>Start Time</label>
                  <select name='sTime' id='sTime' required>
 				<option value='' selected>--Time--</option>
-<?php
-				$time=date('06:00:00');
-				while($time!='22:00:00') //time day ends 
-				{
-					echo"<option value='".$time."'>". date('g:ia',strtotime($time))."</option>";
-					$time = date('H:i:s',strtotime('+15 minutes',strtotime($time)));
-				}
-?>
+				<?php
+					$time=date('06:00:00');
+					while($time!='22:00:00') //time day ends 
+					{
+						echo"<option value='".$time."'>". date('g:ia',strtotime($time))."</option>";
+						$time = date('H:i:s',strtotime('+15 minutes',strtotime($time)));
+					}
+				?>
 				</select>
               </div>
                        
@@ -373,14 +373,14 @@ if((isset($_POST['forall']) || isset($_POST['who'])) && isset($_POST['sTime']) &
                 <label>End Time</label>
                  <select name='eTime' id='eTime' required>
 				<option value='' selected>--Time--</option>
-<?php
-				$time=date('06:15:00');
-				while($time!='22:15:00') //time day ends 
-				{
-					echo"<option value='".$time."'>". date('g:ia',strtotime($time))."</option>";
-					$time = date('H:i:s',strtotime('+15 minutes',strtotime($time)));
-				}
-?>
+				<?php
+					$time=date('06:15:00');
+					while($time!='22:15:00') //time day ends 
+					{
+						echo"<option value='".$time."'>". date('g:ia',strtotime($time))."</option>";
+						$time = date('H:i:s',strtotime('+15 minutes',strtotime($time)));
+					}
+				?>
 			</select>
             </div>  
 			<div class="form-group">
@@ -395,20 +395,20 @@ if((isset($_POST['forall']) || isset($_POST['who'])) && isset($_POST['sTime']) &
                 <label>Who</label>
                 <select name='who' id='who' disabled required>
 				<option value='' selected>--Select--</option>
-<?php
-include('connect.php');
-				$names="SELECT firstname, lastname, employee.employeeid
-						FROM employee, employeeprivlege
-						WHERE privilegeid='E'
-						and employee.employeeid=employeeprivlege.employeeid
-						ORDER BY firstname";
-				$result=$link->query($names);
-				while($row = $result->fetch_assoc()) 
-				{
-					echo"<option value=".$row['employeeid'].">".$row['firstname']." ".$row['lastname']."</option>";
-				}
+				<?php
+					include('connect.php');
+					$names="SELECT firstname, lastname, employee.employeeid
+							FROM employee, employeeprivlege
+							WHERE privilegeid='E'
+							and employee.employeeid=employeeprivlege.employeeid
+							ORDER BY firstname";
+					$result=$link->query($names);
+					while($row = $result->fetch_assoc()) 
+					{
+						echo"<option value=".$row['employeeid'].">".$row['firstname']." ".$row['lastname']."</option>";
+					}
 
-?>
+				?>
 				</select>
             </div>
 			<div class="form-group">
@@ -428,6 +428,95 @@ include('connect.php');
 	  
 
       <!------------------------------------->
+	  <!--------------- Modal Code to update Blockout Time-------------->
+	<div class="modal fade" id="EditBO" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Edit Blockout</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+			
+            <div class="modal-body">
+              <form action = "blocklist_view.php" method = "POST">
+              <div class="form-group">
+                  <label>Start Time</label>
+                 <select  required>
+				<option name='startTime' id='startTime' value='' selected>--Time--</option>
+				<?php
+					$time=date('06:00:00');
+					while($time!='22:00:00') //time day ends 
+					{
+						echo"<option value='".$time."'>". date('g:ia',strtotime($time))."</option>";
+						$time = date('H:i:s',strtotime('+15 minutes',strtotime($time)));
+					}
+				?>
+				</select>
+              </div>
+                       
+              <div class="form-group">
+                <label>End Time</label>
+                 <select  required>
+				<option name='endTime' id='endTime' value='' selected>--Time--</option>
+				<?php
+					$time=date('06:15:00');
+					while($time!='22:15:00') //time day ends 
+					{
+						echo"<option value='".$time."'>". date('g:ia',strtotime($time))."</option>";
+						$time = date('H:i:s',strtotime('+15 minutes',strtotime($time)));
+					}
+				?>
+			</select>
+            </div>  
+			<div class="form-group">
+                <label>Date</label>
+                <input name="datepicker6" type="text" id="datepicker6" readonly='true'>
+            </div>
+			<div class="form-group">
+                <label>All</label>
+                <input type="checkbox" id="forallEdit" name="forallEdit" disabled>
+            </div>
+			<div class="form-group">
+                <label>Who</label>
+                <select   disabled required>
+				<option name='who' id='whoEdit' value=''  selected>--Select--</option>
+				<?php
+					include('connect.php');
+					$names="SELECT firstname, lastname, employee.employeeid
+							FROM employee, employeeprivlege
+							WHERE privilegeid='E'
+							and employee.employeeid=employeeprivlege.employeeid
+							ORDER BY firstname";
+					$result=$link->query($names);
+					while($row = $result->fetch_assoc()) 
+					{
+						echo"<option value=".$row['employeeid'].">".$row['firstname']." ".$row['lastname']."</option>";
+					}
+
+				?>
+				</select>
+            </div>
+			<div class="form-group">
+                <label>Reason</label>
+                <input type="text" name="reasonEdit" id="reasonEdit">
+            </div>
+			<input type = "hidden" id = "EmpID"  required>
+			<input type = "hidden" id = "BOtimeID"  required>
+                <button type="submit" name="submit" class="btn btn-primary">Edit</button> 
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+	  
+
+      <!------------------------------------->
 <?php
 //Make sure to change this so that it only shows the engineers
 	include('connect.php');
@@ -435,7 +524,7 @@ include('connect.php');
 	$curdate=date("Y-m-d");
 	
 	
-	$sqlWI="SELECT firstName, lastName, startTime, endTime, bdate, reason, blackoutid 
+	$sqlWI="SELECT firstName, lastName, startTime, endTime, bdate, reason, blackoutid, blackout.EmployeeID
 			FROM blackout, employee, employeeprivlege
 			WHERE bdate='".$curdate."'
 			and blackout.EmployeeID=employeeprivlege.EmployeeID
@@ -448,7 +537,7 @@ include('connect.php');
 
     echo "<div class='col-md-1'> </div>";
         echo "<div class = 'col-md-10'>";
-          echo " <table> ";
+          echo " <table > ";
           echo "<tr>
 				<th> Edit </th>
 				<th> Remove </th>
@@ -458,15 +547,18 @@ include('connect.php');
 					<th> Reason </th>
 					<th> Date </th>
 				  </tr>";
-			while($row = $result->fetch_assoc()) {
+			while($row = $result->fetch_assoc()) 
+			{
+				$BID =  $row['blackoutid'];
 				echo "<tr>
-					<td><button>Edit</button></td>
-					<td><form method='POST' action='blocklist_view.php'><input name='id' type='hidden' value=".$row['blackoutid']."><button>Remove</button></form></td>
-					<td>".$row["firstName"]. " " . $row["lastName"] . "</td>
-					<td>" . date('g:ia',strtotime($row["startTime"]))."</td>
-					<td>" . date('g:ia',strtotime($row["endTime"]))."</td>
-					<td>" . $row['reason'] . "</td>
-					<td>" . date('n/j/Y',strtotime($row["bdate"]))."</td>
+					<td><button class='btn btn-success EditBO' type='button' data-toggle='modal' data-target='#EditBO' value='" . $row['blackoutid'] . "'>Edit</button></td>
+					<td><form method='POST' action='blocklist_view.php'><input name='id' type='hidden' value=".$row['blackoutid']."><button class = 'btn btn-danger'>Remove</button></form></td>
+					<td id = ".$BID."name>".$row["firstName"]. " " . $row["lastName"] . "</td>
+					<td id = ".$BID."sTime>" . date('g:ia',strtotime($row["startTime"]))."</td>
+					<td id = ".$BID."eTime>" . date('g:ia',strtotime($row["endTime"]))."</td>
+					<td id = ".$BID."reason>" . $row['reason'] . "</td>
+					<td id = ".$BID."date>" . date('n/j/Y',strtotime($row["bdate"]))."</td>
+					<td style = 'display: none' id = ".$BID."eid>".$row['EmployeeID']."</td>
 				</tr>";
 			}
 	echo'</div>';
