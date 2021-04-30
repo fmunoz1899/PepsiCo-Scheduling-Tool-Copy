@@ -28,14 +28,27 @@ $(document).ready(
             function(e)
             {
                 var phone = e.target.value;
+                //var empID = String("#"+phone + "phone")
+                var phoneID = $("#eIDPhone").val();
+                console.log(phone);
+                console.log(phoneID);
+
                 $('#Number').val(phone);
+                $('#EmpIDPN').val(phoneID);
+                $('#EmpIDPN').text(phoneID);
                 
             });
     $(".EmailUpdate").click(
         function(e)
         {
             var email = e.target.value;
+            var emailID = $("#eIDEmail").val();
+            console.log(email);
+            console.log(emailID);
+            
             $('#EmailToEdit').val(email);
+            $('#EmpIDEM').val(emailID);
+            $('#EmpIDEM').text(emailID);
             
         });
     $(".CompWOTime").click(
@@ -131,7 +144,7 @@ $(document).ready(
                 $('#LN').val(name);
                 $('#add').val(adr);
                 $('#cit').val(cit);
-                $('#state').val(state);
+                $('#stateEdit').val(state);
                 $('#ZC').val(zipc);
                   
             });
@@ -181,7 +194,7 @@ $(document).ready(
                     $('#LN').val(name);
                     $('#add').val(adr);
                     $('#cit').val(cit);
-                    $('#state').val(state);
+                    $('#stateAEdit').val(state);
                     $('#ZC').val(zipc);
                     
                 });
@@ -369,6 +382,111 @@ $(document).ready(
                             
                     });
 
+                $(".EditBO ").click(
+                    function(e)
+                    {
+                        
+                        var BOID = e.target.value;
+                        var Ename = String("#"+ BOID + "name")
+                        var name = $(Ename).text();
+                        console.log(name);
+
+                        var start = String("#"+ BOID + "sTime")
+                        var stime = $(start).text();
+                        console.log(stime);
+
+                        var end = String("#"+ BOID + "eTime")
+                        var etime = $(end).text();
+                        console.log(etime);
+
+                        var reason = String("#"+ BOID + "reason")
+                        var editReason = $(reason).text();
+                        console.log(editReason);
+
+                        var date = String("#"+ BOID + "date")
+                        var dte = $(date).text();
+                        console.log(dte);
+
+                        var eid = String("#"+ BOID + "eid")
+                        var id = $(eid).text();
+                        console.log(id);
+
+                        $('#BOtimeID').val(BOID);
+                        //$('#BOtimeID').text(BOID);
+
+                        $('#EmpID').val(id);
+                        //$('#EmpID').text(id);
+
+                        $('#startTime').text(stime);
+                        $('#startTime').val(stime); // value set
+
+                        $('#endTime').text(etime);
+                        $('#endTime').val(etime); // value set
+
+                        $('#datepicker6').text(dte);
+                        $('#datepicker6').val(dte); // value set
+
+                        $('#whoEdit').text(name);
+                        $('#whoEdit').val(name); // value set
+
+                        $('#reasonEdit').text(editReason);
+                        $('#reasonEdit').val(editReason); // value set
+
+                            
+                    });
+                $(".EditBOFltr ").click(
+                    function(e)
+                    {
+                        
+                        var BOID = e.target.value;
+                        var Ename = String("#"+ BOID + "name")
+                        var name = $(Ename).text();
+                        console.log(name);
+
+                        var start = String("#"+ BOID + "sTime")
+                        var stime = $(start).text();
+                        console.log(stime);
+
+                        var end = String("#"+ BOID + "eTime")
+                        var etime = $(end).text();
+                        console.log(etime);
+
+                        var reason = String("#"+ BOID + "reason")
+                        var editReason = $(reason).text();
+                        console.log(editReason);
+
+                        var date = String("#"+ BOID + "date")
+                        var dte = $(date).text();
+                        console.log(dte);
+
+                        var eid = String("#"+ BOID + "eid")
+                        var id = $(eid).text();
+                        console.log(id);
+
+                        $('#BOtimeID').val(BOID);
+                        //$('#BOtimeID').text(BOID);
+
+                        $('#EmpID').val(id);
+                        //$('#EmpID').text(id);
+
+                        $('#startTime').text(stime);
+                        $('#startTime').val(stime); // value set
+
+                        $('#endTime').text(etime);
+                        $('#endTime').val(etime); // value set
+
+                        $('#datepicker6').text(dte);
+                        $('#datepicker6').val(dte); // value set
+
+                        $('#whoEdit').text(name);
+                        $('#whoEdit').val(name); // value set
+
+                        $('#reasonEdit').text(editReason);
+                        $('#reasonEdit').val(editReason); // value set
+
+                            
+                    });
+
 
 
 
@@ -458,7 +576,14 @@ $(document).ready(
                     minDate: new Date("today")+0,
                     dateFormat: "mm/dd/yy"
                 });
-                $('#datepicker4').datepicker('setDate','today');		
+                $('#datepicker5').datepicker('setDate','today');		
+            });	
+            $(document).ready(function() {		
+                $('#datepicker6').datepicker({
+                    minDate: new Date("today")+0,
+                    dateFormat: "mm/dd/yy"
+                });
+                $('#datepicker6').datepicker('setDate','today');		
             });	
             
             $(document).on('change', '#forall', function(){
