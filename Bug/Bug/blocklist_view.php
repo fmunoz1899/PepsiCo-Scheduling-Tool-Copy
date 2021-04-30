@@ -74,7 +74,7 @@ if((isset($_POST['forall']) || isset($_POST['who'])) && isset($_POST['sTime']) &
 		if($_POST['sTime']>=$_POST['eTime'])
 			echo"<script>alert('You cannot start at or after the end time');</script>";
 		
-		else if(($_POST['datepicker3']==date("m/j/Y") && $_POST['sTime']<$curtime))
+		else if(($_POST['datepicker3']==date("m/j/Y") && $_POST['sTime']<$curtime)  && ($curtime<='06:00:00' && $curtime>='22:00:00'))
 			echo"<script>alert('You cannnot make it for the past');</script>";
 		
 		
