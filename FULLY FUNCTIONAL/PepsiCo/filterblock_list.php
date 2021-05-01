@@ -270,7 +270,6 @@ echo"
 				  </tr>";
 				  while($row = $result->fetch_assoc()) 
 				  {
-					  filter_var(htmlentities($_POST['datepicker'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)
 					  $BID =  $row['blackoutid'];
 					  echo "<tr>
 						  <td><button class='btn btn-success EditBOFltr' type='button' data-toggle='modal' data-target='#EditBOFltr' value='" . $row['blackoutid'] . "'>Edit</button></td>
