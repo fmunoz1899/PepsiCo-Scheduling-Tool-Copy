@@ -99,7 +99,7 @@
 			
 			$final= $check->get_result();
             $rowcount=mysqli_num_rows($final);
-			
+			$holder=$row['employeeID'];
 			if($rowcount==0) //not allowing the removal of an employee if the have a work item scheduled
 			{
 				//make sure to remove from blockout
@@ -110,12 +110,22 @@
 										INNER JOIN employeeprivlege on employeeprivlege.EmployeeID=phone.EmployeeID 
 										INNER JOIN ahours on ahours.employeeID=employeeprivlege.employeeID 
 										WHERE email.EmployeeID=?");
-				$remove->bind_param("i",$row['employeeID']);
+				$remove->bind_param("i",$holder);
 				$remove->execute();
-				$remove2=$link->prepare("DELETE blackout
-										 FROM blackout
-										 WHERE employeeid=?");
-				$remove2->bind_param("i",$row['employeeID']);
+				$getall=$link->prepare("SELECT blackoutid
+										FROM blackout
+										WHERE employeeid=?");
+				$getall->bind_param("i",$holder);
+				$getall->execute();
+				$blackid=$getall->get_result();
+			while($bid=$blackid->fetch_assoc())
+			{				
+				$remove2=$link->prepare("DELETE FROM blackout
+										 WHERE employeeid=?
+										 AND blackoutid=?");
+				$remove2->bind_param("ii",$holder,$bid['blackoutid']);
+				$remove2->execute();
+			}
 				echo"<script>alert('" . $row['firstName'] . " " . $row['lastName'] . " was removed!')</script>";
 			}
 			else
