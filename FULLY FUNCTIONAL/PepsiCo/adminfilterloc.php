@@ -248,7 +248,9 @@ $searchl="%".$searchl."%";
 					$locID = $row['LocationID'];
 					echo "<tr>
 					<td><button class='btn btn-success ELocAdmnFltr' type='button' data-toggle='modal' data-target='#EditLocAdmFltr' value='" . $row['LocationID'] . "'>Edit</button></td>
-					<td><form method='POST' action='adminfilterloc.php'><input name='id' type='hidden' value=".$row['LocationID']."><input name='filterl' type='hidden' value=".$_POST['filterl']."><button class = 'btn btn-danger'>Remove</button></form></td>
+					<td><form method='POST' action='adminfilterloc.php'><input name='id' type='hidden' value=".$row['LocationID'].">
+					<input name='filterl' type='hidden' value=".filter_var(htmlentities($_POST['filterl'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING).">
+					<button class = 'btn btn-danger'>Remove</button></form></td>
 					<td id = ".$locID."locname>".$row["LocationName"]. "</td>
 					<td id = ".$locID."addr>". $row["StreetAdress"]. "</td>
 					<td id = ".$locID."cit>". $row["City"]. "</td>
