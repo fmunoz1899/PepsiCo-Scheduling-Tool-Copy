@@ -270,6 +270,7 @@ echo"
 				  </tr>";
 				  while($row = $result->fetch_assoc()) 
 				  {
+					  filter_var(htmlentities($_POST['datepicker'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)
 					  $BID =  $row['blackoutid'];
 					  echo "<tr>
 						  <td><button class='btn btn-success EditBOFltr' type='button' data-toggle='modal' data-target='#EditBOFltr' value='" . $row['blackoutid'] . "'>Edit</button></td>
@@ -278,9 +279,9 @@ echo"
 						  <input name='id' type='hidden' value=".$row['blackoutid'].">
 						  <button class = 'btn btn-danger'>Remove</button>
 						    <input name='id' type='hidden' value=".$row['blackoutid'].">
-						  <input type='hidden' name='datepicker' value='".$_POST['datepicker']."'>
-						  <input type='hidden' name='filterfirst' value='".$_POST['filterfirst']."'>
-						  <input type='hidden' name='filterlast' value='".$_POST['filterlast']."'>
+						  <input type='hidden' name='datepicker' value='".filter_var(htmlentities($_POST['datepicker'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>
+						  <input type='hidden' name='filterfirst' value='".filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>
+						  <input type='hidden' name='filterlast' value='".filter_var(htmlentities($_POST['filterlast'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>
 						  </form>
 						  </td>
 						  <td id = ".$BID."name>".$row["firstName"]. " " . $row["lastName"] . "</td>
@@ -353,9 +354,9 @@ echo"
 						<input type="text" name="reasonEdit" id="reasonEdit">
 					</div>
 					<?php echo"  <input name='id' type='hidden' value=".$row['blackoutid'].">
-						  <input type='hidden' name='datepicker' value='".$_POST['datepicker']."'>
-						  <input type='hidden' name='filterfirst' value='".$_POST['filterfirst']."'>
-						  <input type='hidden' name='filterlast' value='".$_POST['filterlast']."'>"; ?>
+						  <input type='hidden' name='datepicker' value='".filter_var(htmlentities($_POST['datepicker'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>
+						  <input type='hidden' name='filterfirst' value='".filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>
+						  <input type='hidden' name='filterlast' value='".filter_var(htmlentities($_POST['filterlast'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>"; ?>
 					<input type = "hidden" id = "EmpID" name="EmpID" required>
 					<input type = "hidden" id = "BOtimeID" name="BOtimeID" required>
 						<button type="submit" name="submit" class="btn btn-primary">Edit</button> 
