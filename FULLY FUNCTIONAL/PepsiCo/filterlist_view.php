@@ -495,9 +495,10 @@ echo"<td  style = 'display:none' id = ".$info."lid>".$row['locationid']."</td>
 					</div>
 					<input type = "hidden" id = "orderID"  name="orderID" required>
 					<?php 
-					echo"<input type='hidden' name='datepicker' value='".$_POST['datepicker']."'>";
-					echo"<input type='hidden' name='filterfirst' value='".$_POST['filterfirst']."'>";
-					echo"<input type='hidden' name='filterlast' value='".$_POST['filterlast']."'>";
+					
+					echo"<input type='hidden' name='datepicker' value='".filter_var(htmlentities($_POST['datepicker'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>";
+					echo"<input type='hidden' name='filterfirst' value='".filter_var(htmlentities($_POST['filterfirst'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>";
+					echo"<input type='hidden' name='filterlast' value='".filter_var(htmlentities($_POST['filterlast'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_STRING)."'>";
 					?>
 						<button type="submit" name="submit" class="btn btn-primary subBut">Update</button> 
 					</form>
