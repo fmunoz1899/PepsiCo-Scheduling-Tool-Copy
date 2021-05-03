@@ -1229,7 +1229,7 @@ $(document).ready(
                     minDate: new Date("today")+-7,
                     dateFormat: "mm/dd/yy"
                 });
-                $('#datepicker').datepicker('setDate',null);		
+                $('#datepicker').datepicker('setDate','today');		
             });	
             
             $(document).ready(function() {		
