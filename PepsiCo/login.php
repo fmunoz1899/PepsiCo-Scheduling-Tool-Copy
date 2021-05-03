@@ -24,7 +24,6 @@
 		$emailcheck= filter_var($_POST['Email'], FILTER_SANITIZE_EMAIL);
 		
 		$passwordcheck= hash('sha256' , filter_var($_POST['Epassword'], FILTER_SANITIZE_STRING));
-		echo"<script>alert('".$passwordcheck."');</script>";
 		$typing="Work";
 		
 		$result = $link->prepare("SELECT employeeprivlege.PrivilegeID, employeeprivlege.EmployeeID, email.type FROM employeeprivlege, email, employee WHERE Email.type=? and Email.Email=? and email.EmployeeID= employeeprivlege.EmployeeID and email.EmployeeID=employee.EmployeeID and employee.Epassword=?") ;
