@@ -446,11 +446,11 @@ if((isset($_POST['forall']) || isset($_POST['who'])) && isset($_POST['sTime']) &
                     <input type="text" name="filterfirst" placeholder="First Name"> <!-- might need to change so it can filter by first and last name separately-->
                     <input type="text" name="filterlast" placeholder="Last Name"><br>
                     <label>Select Date:</label> 
-                      <input name="datepicker" type="text" id="datepicker" readonly='true' placeholder="Click Here to Select Date">
+                      <input name="datepicker" type="text" id="datepicker" readonly='true'>
                       <button type="submit" name="submit" class="btn btn-primary">Filter</button>
                   </form > 
-				  <button type="submit" name="clear" id="clear" class="btn btn-primary">Clear All</button>
-				  <br>If no date selected with first and/or last name, date will default today
+				  <!--<button type="submit" name="clear" id="clear" class="btn btn-primary">Clear All</button>-->
+				  <!--<br>If no date selected with first and/or last name, date will default today-->
 
                     </select>
                 </div>
