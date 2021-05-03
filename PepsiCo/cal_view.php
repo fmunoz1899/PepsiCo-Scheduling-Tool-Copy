@@ -315,10 +315,11 @@ if(isset($_POST['EmpID']) && isset($_POST['BOtimeID']))
 					$upblock=$link->prepare("UPDATE blackout
 											 SET starttime=?,
 											 endtime=?,
-											 bdate=?
+											 bdate=?,
+											 reason=?
 											 WHERE blackoutID=?
 											 AND employeeID=?");
-					$upblock->bind_param("sssii",$startTimeBO,$endTimeBO,$curdate,$_POST['BOtimeID'],$_POST['EmpID']);
+					$upblock->bind_param("ssssii",$startTimeBO,$endTimeBO,$curdate,$reason,$_POST['BOtimeID'],$_POST['EmpID']);
 					$upblock->execute();
 				}
 		}
