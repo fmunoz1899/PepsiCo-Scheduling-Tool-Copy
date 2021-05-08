@@ -1267,6 +1267,7 @@ echo"				</div>";
 					}
 			echo"</tr>
 				</table>";
+		$link->close();
 ?>
     </body>
 </html>
