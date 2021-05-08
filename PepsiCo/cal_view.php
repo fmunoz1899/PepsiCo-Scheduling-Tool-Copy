@@ -2249,7 +2249,8 @@ echo"					</tr>";
  echo"            
             </table>
 			</div>
-		";}
+		";
+		mysqli_close($link);}
  ?>
 
             </table>
