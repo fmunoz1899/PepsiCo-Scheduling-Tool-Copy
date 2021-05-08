@@ -63,6 +63,7 @@
 		$name=$link->query($name);
 			   $row = $name->fetch_assoc();
 		echo" <h1 class='font-weight-bold text-center'>Welcome Back ".$row['firstname']." ".$row['lastname']."</h1>";
+		$link->close() 
  ?>				
                 <img class = "img1"  src = "pepsi.png"> 
                 <hr class = "hr1">
