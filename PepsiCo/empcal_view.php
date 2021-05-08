@@ -795,6 +795,7 @@ echo"
 			</div>";
 			
 		}
+	$link->close();
  ?>
 
             </table>
