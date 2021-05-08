@@ -509,7 +509,7 @@ if((isset($_POST['forall']) || isset($_POST['who'])) && isset($_POST['sTime']) &
           <div class="row "> 
             <div class="col-md-9"> </div>
               <div class="col-md-3">
-                <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newBO"> Create Block Out</button>
+                <button type="button" class="btn btn-primary mbut" data-toggle="modal" data-target="#newBO"> Create Blockout</button>
               </div>
           </div>
       </div>
