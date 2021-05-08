@@ -757,7 +757,10 @@ echo"
 				<!-- I need info passed to the modal to be make the update-->
 				<br>
 				
-				<?php echo"<input type='hidden' name='datepicker2' value='".filter_var(htmlentities($_POST['datepicker2'],  ENT_QUOTES,  "utf-8"),FILTER_SANITIZE_STRING)."'>"; ?>
+				<?php 
+	    				echo"<input type='hidden' name='datepicker2' value='".filter_var(htmlentities($_POST['datepicker2'],  ENT_QUOTES,  "utf-8"),FILTER_SANITIZE_STRING)."'>"; 
+	    				$link->close();
+	    			?>
 			<button type="submit" name="submit" class="btn btn-primary">Confirm</button>
               </form>
 			</div>
