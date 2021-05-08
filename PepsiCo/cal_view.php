@@ -2250,6 +2250,7 @@ echo"					</tr>";
             </table>
 			</div>
 		";}
+$link->close();
  ?>
 
             </table>
