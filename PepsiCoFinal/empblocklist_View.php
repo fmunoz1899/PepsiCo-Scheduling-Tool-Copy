@@ -58,7 +58,7 @@
 
 
             <div class="jumbotron text-center jumbotron2">
-                <h1 class="font-weight-bold text-center">Engineer Workorder List View</h1>
+                <h1 class="font-weight-bold text-center">Engineer Blockout List View</h1>
 <?php 
 	include('connect.php');
 		$name="SELECT firstname, lastname
