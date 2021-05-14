@@ -103,6 +103,7 @@
 	{
 		if(isset($_POST['transfer'])) //make sure to make it check if the worker being removed is not scheduled for a work order
 		{
+			$curdate=date("Y-m-d");
 			$clean=filter_var(htmlentities($_POST['transfer'],  ENT_QUOTES,  'utf-8'),FILTER_SANITIZE_EMAIL); // to get the users empID
 			$empid=$link->prepare("SELECT email.employeeID, firstName, lastName FROM email, employee WHERE email.email=? and email.EmployeeID=employee.EmployeeID");
 			$empid->bind_param("s",$clean);
@@ -110,8 +111,12 @@
 			$result=$empid->get_result();
 			$row=$result->fetch_assoc();
 
-			$check=$link->prepare("SELECT employeeID FROM workitem WHERE EmployeeID=?");
-			$check->bind_param("i",$row['employeeID']);
+			$check=$link->prepare("SELECT employeeID 
+								   FROM workitem, wi_schedule
+								   WHERE EmployeeID=?
+								   AND workitem.itemid=wi_schedule.itemid
+								   AND date>=?");
+			$check->bind_param("is",$row['employeeID'],$curdate);
 			$check->execute();
 			$final= $check->get_result();
 			$rowcount=mysqli_num_rows($final);
@@ -401,7 +406,6 @@ echo"
 								echo"<td>".$fullschd['StartTime']." - ".$fullschd['EndTime']."</td>";
 						}
 echo"
-
 						<td>" . $row['PrivilegeID'] . "</td>";
 							
 						
@@ -425,7 +429,6 @@ echo"
 					}
 	$link->close();
 					?>
-					
                   </table>
 				  <br>
 				  <br>
