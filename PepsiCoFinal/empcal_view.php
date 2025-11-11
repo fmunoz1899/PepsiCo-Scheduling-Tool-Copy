@@ -314,7 +314,7 @@ echo"
           <div class='item'>
             <table class = 'cal_tbl_bg'>
               <tr>
-                <th></th>
+                <th><b>".date('D',strtotime($curdate))."</b></th>
                 <th colspan='2'><b>".date('n/j/Y',strtotime($curdate))."</b></th>";
 				
 				$items="SELECT starttime, endtime, actualendtime, workitem.itemid, preferrede1, preferrede2, description, locationID, deliveryid, date
@@ -809,4 +809,5 @@ echo"
        </div>
 	  </div>    
     </body>
+
 </html>
